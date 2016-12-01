@@ -1,1 +1,4 @@
 # CP1-amity-space-allocation
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f8d08f57520f495db9ac118809c63ee8)](https://www.codacy.com/app/brian-rotich/CP1-amity-space-allocation?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=andela-brotich/CP1-amity-space-allocation&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/f8d08f57520f495db9ac118809c63ee8)](https://www.codacy.com/app/brian-rotich/CP1-amity-space-allocation?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=andela-brotich/CP1-amity-space-allocation&amp;utm_campaign=Badge_Coverage) 
+[![Build Status](https://travis-ci.org/andela-brotich/CP1-amity-space-allocation.svg?branch=develop)](https://travis-ci.org/andela-brotich/CP1-amity-space-allocation)
