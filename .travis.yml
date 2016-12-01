@@ -1,0 +1,19 @@
+language: python
+
+python:
+  - "2.7"
+
+install:
+  - pip install -r requirements.txt
+  - pip install mock nose codeclimate-test-reporter
+
+script:
+  - nosetests --with-coverage --cover-erase
+
+after_success:
+  - codeclimate-test-reporter
+
+cache: pip
+
+notifications:
+  email: false
