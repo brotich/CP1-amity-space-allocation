@@ -1,5 +1,4 @@
 
-
 class Role(object):
     STAFF = 0
     FELLOW = 1
@@ -25,4 +24,8 @@ class Staff(Person):
 
 
 class Fellow(Person):
-    pass
+    role = Role.STAFF
+
+    def __init__(self, name, accommodation='N'):
+        super(self.__class__, self).__init__(name)
+        self.accommodation = accommodation
