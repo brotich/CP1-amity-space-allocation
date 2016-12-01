@@ -1,6 +1,6 @@
 import unittest
 
-from mod_amity.models import Staff, Role, Fellow
+from mod_amity.models import Staff, Role, Fellow, Office
 from mod_amity.tests import fake
 
 
@@ -56,19 +56,34 @@ class FellowClassTestCase(unittest.TestCase):
             self.assertEqual("Fellow didn't request living space", exception.exception)
 
 
-class OfficeClassTestCase(object):
+class OfficeClassTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.office_name = "Hogwarts"
+        self.staff = [Staff(fake.first_name() + " " + fake.last_name())] * 2
+        self.fellow = [Fellow(fake.first_name() + " " + fake.last_name())] * 6
 
     def test_it_create_new_room(self):
-        pass
+        office = Office(self.office_name)
 
-    def test_max_capacity_4(self):
-        pass
+        self.assertEqual(self.office_name, office.name)
+        self.assertEqual(4, Office.get_capacity())
+        self.assertRaises(TypeError, Office, 123)
+        self.assertRaises(ValueError, Office, "")
 
     def test_it_assigns_staff(self):
-        pass
+        office = Office(self.office_name+"4343")
+        for staff in self.staff:
+            office.allocate_space(staff)
+
+        self.assertEqual(2, len(office.occupants))
 
     def test_it_assigns_fellow(self):
-        pass
+        office = Office(self.office_name)
+        for fellow in self.fellow[:4]:
+            office.allocate_space(fellow)
 
-    def test_error_assign_more_than_4_perons(self):
+        self.assertEqual(4, len(office.occupants))
+
+    def test_error_assign_more_than_4_persons(self):
         pass

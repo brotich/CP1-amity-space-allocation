@@ -45,7 +45,28 @@ class Fellow(Person):
 
 class Room(object):
     capacity = None
+    name = None
+    occupants = []
+
+    def __init__(self, name):
+        if type(name) != str:
+            raise TypeError("string expected")
+        if len(name) == 0:
+            raise ValueError("name cannot be empty")
+        self.name = name
+
+    @classmethod
+    def allocate_space(cls, person):
+        if not isinstance(person, Person):
+            raise TypeError("office assigned to fellow or staff")
+        cls.occupants.append(person)
+
+    @classmethod
+    def get_capacity(cls):
+        return cls.capacity
 
 
 class Office(Room):
-    pass
+    capacity = 4
+
+
