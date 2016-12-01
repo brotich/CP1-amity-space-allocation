@@ -41,3 +41,11 @@ class Fellow(Person):
         if self.accommodation == 'N':
             raise ValueError("Fellow didn't request living space")
         self.living_space = living_space
+
+
+class Room(object):
+    capacity = None
+
+
+class Office(Room):
+    pass

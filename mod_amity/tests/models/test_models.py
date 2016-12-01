@@ -13,7 +13,6 @@ class StaffClassTestCase(unittest.TestCase):
         self.assertEqual(self.staff_name, staff.name)
         self.assertEqual(Role.STAFF, staff.get_role())
 
-
     def test_it_assigns_office(self):
         office = "Narnia"
         staff = Staff(self.staff_name)
@@ -55,3 +54,21 @@ class FellowClassTestCase(unittest.TestCase):
         with self.assertRaises(ValueError)as exception:
             fellow2.assign_living_space(living_space)
             self.assertEqual("Fellow didn't request living space", exception.exception)
+
+
+class OfficeClassTestCase(object):
+
+    def test_it_create_new_room(self):
+        pass
+
+    def test_max_capacity_4(self):
+        pass
+
+    def test_it_assigns_staff(self):
+        pass
+
+    def test_it_assigns_fellow(self):
+        pass
+
+    def test_error_assign_more_than_4_perons(self):
+        pass
