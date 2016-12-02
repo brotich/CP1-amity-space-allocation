@@ -61,13 +61,14 @@ class OfficeClassTestCase(unittest.TestCase):
     def setUp(self):
         self.office_name = "Hogwarts"
         self.staff = [Staff(fake.first_name() + " " + fake.last_name())] * 2
-        self.fellow = [Fellow(fake.first_name() + " " + fake.last_name())] * 6
+        self.fellow = [Fellow(fake.first_name() + " " + fake.last_name())] * 4
+        self.people = self.fellow + self.staff
 
     def test_it_create_new_room(self):
         office = Office(self.office_name)
 
         self.assertEqual(self.office_name, office.name)
-        self.assertEqual(4, office.get_capacity())
+        self.assertEqual(6, office.get_capacity())
         self.assertRaises(TypeError, Office, 123)
         self.assertRaises(ValueError, Office, "")
 
@@ -85,9 +86,11 @@ class OfficeClassTestCase(unittest.TestCase):
 
         self.assertEqual(4, len(office3.occupants))
 
-    def test_error_assign_more_than_4_persons(self):
+    def test_error_assign_more_than_6_persons(self):
         office = Office(self.office_name)
         with self.assertRaises(ValueError) as exception:
-            for fellow in self.fellow:
+            for fellow in self.people:
                 office.allocate_space(fellow)
             self.assertIn("Room is full", exception)
+
+

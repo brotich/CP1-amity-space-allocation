@@ -66,7 +66,7 @@ class Room(object):
 
 
 class Office(Room):
-    capacity = 4
+    capacity = 6
 
 
 
