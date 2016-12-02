@@ -9,7 +9,7 @@ class Person(object):
 
     def __init__(self, name):
 
-        if type(name) == str:
+        if isinstance(name, str):
             raise TypeError("name should be string")
 
         if len(name) == 0:
@@ -45,28 +45,28 @@ class Fellow(Person):
 
 class Room(object):
     capacity = None
-    name = None
-    occupants = []
 
     def __init__(self, name):
-        if type(name) != str:
+        if not isinstance(name, str):
             raise TypeError("string expected")
         if len(name) == 0:
             raise ValueError("name cannot be empty")
         self.name = name
+        self.occupants = []
 
-    @classmethod
-    def allocate_space(cls, person):
+    def allocate_space(self, person):
         if not isinstance(person, Person):
             raise TypeError("office assigned to fellow or staff")
-        cls.occupants.append(person)
+        if len(self.occupants) > 4:
+            raise ValueError("Room is full")
+        self.occupants.append(person)
 
-    @classmethod
-    def get_capacity(cls):
-        return cls.capacity
+    def get_capacity(self):
+        return self.capacity
 
 
 class Office(Room):
     capacity = 4
+
 
 

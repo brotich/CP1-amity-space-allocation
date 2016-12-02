@@ -53,7 +53,7 @@ class FellowClassTestCase(unittest.TestCase):
         self.assertEqual(living_space, fellow1.living_space)
         with self.assertRaises(ValueError)as exception:
             fellow2.assign_living_space(living_space)
-            self.assertEqual("Fellow didn't request living space", exception.exception)
+            self.assertIn("Fellow didn't request living space", exception)
 
 
 class OfficeClassTestCase(unittest.TestCase):
@@ -67,23 +67,27 @@ class OfficeClassTestCase(unittest.TestCase):
         office = Office(self.office_name)
 
         self.assertEqual(self.office_name, office.name)
-        self.assertEqual(4, Office.get_capacity())
+        self.assertEqual(4, office.get_capacity())
         self.assertRaises(TypeError, Office, 123)
         self.assertRaises(ValueError, Office, "")
 
     def test_it_assigns_staff(self):
-        office = Office(self.office_name+"4343")
+        office = Office(self.office_name)
         for staff in self.staff:
             office.allocate_space(staff)
 
-        self.assertEqual(2, len(office.occupants))
+        self.assertListEqual(self.staff, office.occupants)
 
     def test_it_assigns_fellow(self):
-        office = Office(self.office_name)
+        office3 = Office(self.office_name)
         for fellow in self.fellow[:4]:
-            office.allocate_space(fellow)
+            office3.allocate_space(fellow)
 
-        self.assertEqual(4, len(office.occupants))
+        self.assertEqual(4, len(office3.occupants))
 
     def test_error_assign_more_than_4_persons(self):
-        pass
+        office = Office(self.office_name)
+        with self.assertRaises(ValueError) as exception:
+            for fellow in self.fellow:
+                office.allocate_space(fellow)
+            self.assertIn("Room is full", exception)
