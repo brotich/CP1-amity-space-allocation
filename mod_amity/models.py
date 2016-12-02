@@ -5,7 +5,6 @@ class Role(object):
 
 
 class Person(object):
-    role = None
 
     def __init__(self, name):
 
@@ -17,6 +16,7 @@ class Person(object):
 
         self.name = name
         self.office = None
+        self.role = None
 
     def assign_office(self, office):
         self.office = office
@@ -26,16 +26,19 @@ class Person(object):
 
 
 class Staff(Person):
-    role = Role.STAFF
+
+    def __init__(self, name):
+        super(self.__class__, self).__init__(name)
+        self.role = Role.STAFF
 
 
 class Fellow(Person):
-    role = Role.FELLOW
-    living_space = None
 
     def __init__(self, name, accommodation='N'):
         super(self.__class__, self).__init__(name)
         self.accommodation = accommodation
+        self.living_space = None
+        self.role = Role.FELLOW
 
     def assign_living_space(self, living_space):
         if self.accommodation == 'N':
