@@ -45,6 +45,7 @@ class Fellow(Person):
 
 class Room(object):
     capacity = None
+    occupants = []
 
     def __init__(self, name):
         if not isinstance(name, str):
@@ -67,6 +68,10 @@ class Room(object):
 
 class Office(Room):
     capacity = 6
+
+
+class LivingSpace(Room):
+    capacity = 4
 
 
 

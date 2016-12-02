@@ -1,6 +1,6 @@
 import unittest
 
-from mod_amity.models import Staff, Role, Fellow, Office
+from mod_amity.models import Staff, Role, Fellow, Office, LivingSpace
 from mod_amity.tests import fake
 
 
@@ -51,7 +51,7 @@ class FellowClassTestCase(unittest.TestCase):
         fellow1.assign_living_space(living_space)
 
         self.assertEqual(living_space, fellow1.living_space)
-        with self.assertRaises(ValueError)as exception:
+        with self.assertRaises(ValueError) as exception:
             fellow2.assign_living_space(living_space)
             self.assertIn("Fellow didn't request living space", exception)
 
@@ -64,7 +64,7 @@ class OfficeClassTestCase(unittest.TestCase):
         self.fellow = [Fellow(fake.first_name() + " " + fake.last_name())] * 4
         self.people = self.fellow + self.staff
 
-    def test_it_create_new_room(self):
+    def test_it_create_new_room_instance(self):
         office = Office(self.office_name)
 
         self.assertEqual(self.office_name, office.name)
@@ -93,4 +93,48 @@ class OfficeClassTestCase(unittest.TestCase):
                 office.allocate_space(fellow)
             self.assertIn("Room is full", exception)
 
+
+class LivingSpaceTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.living_space_name = "Shell"
+        self.staff = Staff(fake.first_name() + " " + fake.last_name())
+        self.fellows = [Fellow(fake.first_name() + " " + fake.last_name())] * 7
+
+    def test_it_creates_new_living_space_instance(self):
+        living_space = LivingSpace(self.living_space_name)
+
+        self.assertEqual(self.living_space_name, living_space.name)
+        self.assertEqual(4, living_space.capacity)
+
+        with self.assertRaises(TypeError) as exception:
+            LivingSpace([])
+            LivingSpace(123)
+            self.assertIn("string expected", exception)
+
+        with self.assertRaises(ValueError) as exception:
+            LivingSpace("")
+            self.assertIn("name cannot be empty", exception)
+
+    def test_it_assigns_fellow(self):
+        living_space = LivingSpace(self.living_space_name)
+        living_space.allocate_space(self.fellows[0])
+
+        self.assertEqual(self.fellows[0], LivingSpace.occupants)
+
+    def test_it_raises_error_assign_staff(self):
+        living_space = LivingSpace(self.living_space_name)
+
+        with self.assertRaises(TypeError) as exception:
+            living_space.allocate_space(self.staff)
+            self.assertIn("Staff cannot be allocate Living Space", exception)
+
+    def test_error_assign_more_than_4_fellows(self):
+        living_space = LivingSpace(self.living_space_name)
+
+        with self.assertRaises(ValueError) as exception:
+            for fellow in self.fellows:
+                living_space.allocate_space(fellow)
+
+            self.assertIn("Living Space is full", exception)
 
