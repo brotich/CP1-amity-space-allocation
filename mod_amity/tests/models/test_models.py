@@ -61,7 +61,7 @@ class OfficeClassTestCase(unittest.TestCase):
     def setUp(self):
         self.office_name = "Hogwarts"
         self.staff = [Staff(fake.first_name() + " " + fake.last_name())] * 2
-        self.fellow = [Fellow(fake.first_name() + " " + fake.last_name())] * 4
+        self.fellow = [Fellow(fake.first_name() + " " + fake.last_name())] * 7
         self.people = self.fellow + self.staff
 
     def test_it_create_new_room_instance(self):
@@ -88,9 +88,11 @@ class OfficeClassTestCase(unittest.TestCase):
 
     def test_error_assign_more_than_6_persons(self):
         office = Office(self.office_name)
+
         with self.assertRaises(ValueError) as exception:
-            for fellow in self.people:
-                office.allocate_space(fellow)
+            for person in self.people:
+                office.allocate_space(person)
+
             self.assertIn("Room is full", exception)
 
 
@@ -120,7 +122,7 @@ class LivingSpaceTestCase(unittest.TestCase):
         living_space = LivingSpace(self.living_space_name)
         living_space.allocate_space(self.fellows[0])
 
-        self.assertEqual(self.fellows[0], LivingSpace.occupants)
+        self.assertEqual(self.fellows[0], living_space.occupants[0])
 
     def test_it_raises_error_assign_staff(self):
         living_space = LivingSpace(self.living_space_name)
@@ -136,5 +138,5 @@ class LivingSpaceTestCase(unittest.TestCase):
             for fellow in self.fellows:
                 living_space.allocate_space(fellow)
 
-            self.assertIn("Living Space is full", exception)
+            self.assertIn("Room is full", exception)
 

@@ -44,22 +44,23 @@ class Fellow(Person):
 
 
 class Room(object):
-    capacity = None
-    occupants = []
 
-    def __init__(self, name):
+    def __init__(self, name,  capacity=None):
         if not isinstance(name, str):
             raise TypeError("string expected")
         if len(name) == 0:
             raise ValueError("name cannot be empty")
+
         self.name = name
         self.occupants = []
+        self.capacity = capacity
 
     def allocate_space(self, person):
+        if not len(self.occupants) < self.capacity:
+            raise ValueError("Room is full")
         if not isinstance(person, Person):
             raise TypeError("office assigned to fellow or staff")
-        if len(self.occupants) > 4:
-            raise ValueError("Room is full")
+
         self.occupants.append(person)
 
     def get_capacity(self):
@@ -67,11 +68,15 @@ class Room(object):
 
 
 class Office(Room):
-    capacity = 6
+
+    def __init__(self, name):
+        super(self.__class__, self).__init__(name, 6)
 
 
 class LivingSpace(Room):
-    capacity = 4
+
+    def __init__(self, name):
+        super(self.__class__, self).__init__(name, 4)
 
 
 
