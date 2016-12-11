@@ -1,10 +1,10 @@
-import unittest
+from unittest import TestCase
 
 from mod_amity.models import Staff, Role, Fellow, Office, LivingSpace
 from mod_amity.tests import fake
 
 
-class StaffClassTestCase(unittest.TestCase):
+class StaffClassTestCase(TestCase):
     def setUp(self):
         self.staff_name = fake.first_name() + " " + fake.last_name()
 
@@ -21,7 +21,7 @@ class StaffClassTestCase(unittest.TestCase):
         self.assertEqual(office, staff.office)
 
 
-class FellowClassTestCase(unittest.TestCase):
+class FellowClassTestCase(TestCase):
     def setUp(self):
         self.fellow_name1 = fake.first_name() + " " + fake.last_name()
         self.fellow_name2 = fake.first_name() + " " + fake.last_name()
@@ -56,7 +56,7 @@ class FellowClassTestCase(unittest.TestCase):
             self.assertIn("Fellow didn't request living space", exception)
 
 
-class OfficeClassTestCase(unittest.TestCase):
+class OfficeClassTestCase(TestCase):
 
     def setUp(self):
         self.office_name = "Hogwarts"
@@ -96,7 +96,7 @@ class OfficeClassTestCase(unittest.TestCase):
             self.assertIn("Room is full", exception)
 
 
-class LivingSpaceTestCase(unittest.TestCase):
+class LivingSpaceTestCase(TestCase):
 
     def setUp(self):
         self.living_space_name = "Shell"
