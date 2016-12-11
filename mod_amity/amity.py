@@ -1,30 +1,61 @@
-from mod_amity.models import Office, LivingSpace, Fellow, Staff
+import random
+
+from mod_amity.models import Office, LivingSpace, Fellow, Staff, Role
 
 
 class Amity(object):
-    offices = {
-        "available": [],
-        "unavailable": []
-    }
-    living_space = {
-        "available": [],
-        "unavailable": []
-    }
-    fellows = []
-    staff = []
-    people = fellows + staff
+    def __init__(self):
+        self.offices = {
+            "available": [],
+            "unavailable": []
+        }
+        self.living_spaces = {
+            "available": [],
+            "unavailable": []
+        }
+        self.fellows = []
+        self.staff = []
+        self.people = self.fellows + self.staff
 
     def create_office(self, name):
         self.offices["available"].append(Office(name))
 
     def create_living_space(self, name):
-        self.living_space["available"].append(LivingSpace(name))
+        self.living_spaces["available"].append(LivingSpace(name))
 
-    def create_fellow(self, name):
-        self.fellows.append(Fellow(name))
+    def create_fellow(self, name, accomodation='N'):
+        fellow = Fellow(name)
+        self.fellows.append(fellow)
+        self.allocate_person(fellow)
+
+        return fellow
 
     def create_staff(self, name):
-        self.staff.append(Staff(name))
+        staff = Staff(name)
+        self.staff.append(staff)
+        self.allocate_person(staff)
+
+        return staff
+
+    def allocate_person(self, person):
+
+        office = random.choice(self.offices["available"]) if len(self.offices["available"]) > 0 else None
+        living_space = random.choice(self.living_spaces["available"]) \
+            if len(self.living_spaces["available"]) > 0 else None
+
+        if person.role == Role.STAFF:
+            if office is not None:
+                office.allocate_space(person)
+                person.assign_office(office.name)
+        elif person.role == Role.FELLOW:
+            if office is not None:
+                office.allocate_space(person)
+                person.assign_office(office.name)
+            if living_space is not None and person.accommodation == 'Y':
+                living_space.allocate_space(person)
+                person.assign_living_space(living_space.name)
+
+        return person
 
     def get_unallocated_person(self):
         pass

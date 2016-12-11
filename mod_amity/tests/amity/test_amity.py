@@ -1,7 +1,10 @@
 from __future__ import print_function
 from unittest import TestCase
 
+from mock import mock
+
 from mod_amity.amity import Amity
+from mod_amity.models import Office, LivingSpace
 from mod_amity.tests.amity import fake
 
 
@@ -19,11 +22,13 @@ class AmityTestCase(TestCase):
     def test_create_living_space(self):
         self.amity.create_living_space("Winter")
 
-        self.assertGreater(len(self.amity.living_space["available"]), 0)
-        self.assertEqual("Winter", self.amity.living_space["available"][0].name)
+        self.assertGreater(len(self.amity.living_spaces["available"]), 0)
+        self.assertEqual("Winter", self.amity.living_spaces["available"][0].name)
 
     def test_create_fellow(self):
         name = fake.first_name() + " " + fake.last_name()
+        self.amity.create_living_space("Shell")
+        self.amity.create_office("Hogwarts")
         self.amity.create_fellow(name)
 
         self.assertGreater(len(self.amity.fellows), 0)
@@ -31,6 +36,9 @@ class AmityTestCase(TestCase):
 
     def test_create_staff(self):
         name = fake.first_name() + " " + fake.last_name()
+        self.amity.create_living_space("Shell")
+        self.amity.create_office("Hogwarts")
+
         self.amity.create_staff(name)
 
         self.assertGreater(len(self.amity.staff), 0)
