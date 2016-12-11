@@ -48,6 +48,10 @@ class Fellow(Person):
 
 class Room(object):
 
+    name = None
+    occupants = []
+    capacity = None
+
     def __init__(self, name,  capacity=None):
         if not isinstance(name, str):
             raise TypeError("string expected")
