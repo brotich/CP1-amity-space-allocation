@@ -43,14 +43,10 @@ class Amity(object):
         living_space = random.choice(self.living_spaces["available"]) \
             if len(self.living_spaces["available"]) > 0 else None
 
-        if person.role == Role.STAFF:
-            if office is not None:
+        if office is not None:
                 office.allocate_space(person)
                 person.assign_office(office.name)
-        elif person.role == Role.FELLOW:
-            if office is not None:
-                office.allocate_space(person)
-                person.assign_office(office.name)
+        if person.role == Role.FELLOW:
             if living_space is not None and person.accommodation == 'Y':
                 living_space.allocate_space(person)
                 person.assign_living_space(living_space.name)

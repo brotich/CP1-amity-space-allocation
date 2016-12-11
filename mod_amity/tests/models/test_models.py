@@ -79,7 +79,7 @@ class OfficeClassTestCase(TestCase):
 
         self.assertListEqual(self.staff, office.occupants)
 
-    def test_it_assigns_fellow(self):
+    def test_it_assigns_fellows(self):
         office3 = Office(self.office_name)
         for fellow in self.fellow[:4]:
             office3.allocate_space(fellow)

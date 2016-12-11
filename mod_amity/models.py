@@ -74,6 +74,10 @@ class Room(object):
     def get_capacity(self):
         return self.capacity
 
+    def is_full(self):
+        print (len(self.occupants) >= self.capacity)
+        return len(self.occupants) >= self.capacity
+
 
 class Office(Room):
 
