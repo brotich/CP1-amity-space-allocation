@@ -1,4 +1,4 @@
-from mod_amity.models import Office, LivingSpace
+from mod_amity.models import Office, LivingSpace, Fellow, Staff
 
 
 class Amity(object):
@@ -15,18 +15,18 @@ class Amity(object):
     people = fellows + staff
 
     def create_office(self, name):
-        pass
+        self.offices["available"].append(Office(name))
 
     def create_living_space(self, name):
-        pass
+        self.living_space["available"].append(LivingSpace(name))
 
     def create_fellow(self, name):
-        pass
+        self.fellows.append(Fellow(name))
 
     def create_staff(self, name):
-        pass
+        self.staff.append(Staff(name))
 
-    def get_unallocated(self):
+    def get_unallocated_person(self):
         pass
 
     def get_rooms(self, room_name=None):
