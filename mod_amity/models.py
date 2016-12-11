@@ -75,7 +75,6 @@ class Room(object):
         return self.capacity
 
     def is_full(self):
-        print (len(self.occupants) >= self.capacity)
         return len(self.occupants) >= self.capacity
 
 

@@ -44,12 +44,21 @@ class Amity(object):
             if len(self.living_spaces["available"]) > 0 else None
 
         if office is not None:
-                office.allocate_space(person)
-                person.assign_office(office.name)
+            office.allocate_space(person)
+            person.assign_office(office.name)
+
+            if office.is_full():
+                self.offices["unavailable"].append(office)
+                self.offices["available"].remove(office)
+
         if person.role == Role.FELLOW:
             if living_space is not None and person.accommodation == 'Y':
                 living_space.allocate_space(person)
                 person.assign_living_space(living_space.name)
+
+                if living_space.is_full():
+                    self.living_spaces["unavailable"].append(living_space)
+                    self.living_spaces["available"].remove(living_space)
 
     def get_unallocated_person(self):
         pass
