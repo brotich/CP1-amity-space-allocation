@@ -26,22 +26,22 @@ class AmityTestCase(TestCase):
         name = fake.first_name() + " " + fake.last_name()
         self.amity.create_living_space("Shell")
         self.amity.create_office("Hogwarts")
-        self.amity.create_fellow(name)
+        fellow = self.amity.create_fellow(name)
 
         self.assertGreater(len(self.amity.fellows), 0)
         self.assertEqual(name, self.amity.fellows[0].name)
 
-        self.assertIsNone(self.amity.fellows[0].living_space)
-        self.assertEqual("Hogwarts", self.amity.fellows[0].office)
+        self.assertIsNone(fellow.living_space)
+        self.assertEqual("Hogwarts", fellow.office)
 
     def test_create_staff(self):
         name = fake.first_name() + " " + fake.last_name()
         self.amity.create_living_space("Shell")
         self.amity.create_office("Hogwarts")
 
-        self.amity.create_staff(name)
+        staff = self.amity.create_staff(name)
 
         self.assertGreater(len(self.amity.staff), 0)
-        self.assertEqual(name, self.amity.staff[0].name)
-        self.assertEqual("Hogwarts", self.amity.staff[0].office)
+        self.assertEqual(name, staff.name)
+        self.assertEqual("Hogwarts", staff.office)
 

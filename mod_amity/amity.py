@@ -23,8 +23,8 @@ class Amity(object):
     def create_living_space(self, name):
         self.living_spaces["available"].append(LivingSpace(name))
 
-    def create_fellow(self, name, accomodation='N'):
-        fellow = Fellow(name)
+    def create_fellow(self, name, accommodation='N'):
+        fellow = Fellow(name, accommodation=accommodation)
         self.fellows.append(fellow)
         self.allocate_person(fellow)
 
@@ -54,8 +54,6 @@ class Amity(object):
             if living_space is not None and person.accommodation == 'Y':
                 living_space.allocate_space(person)
                 person.assign_living_space(living_space.name)
-
-        return person
 
     def get_unallocated_person(self):
         pass

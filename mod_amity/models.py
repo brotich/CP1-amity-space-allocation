@@ -6,7 +6,7 @@ class Role(object):
 
 class Person(object):
 
-    def __init__(self, name):
+    def __init__(self, name, id=None):
 
         if isinstance(name, str):
             raise TypeError("name should be string")
@@ -17,6 +17,7 @@ class Person(object):
         self.name = name
         self.office = None
         self.role = None
+        self.id = id
 
     def assign_office(self, office):
         self.office = office
@@ -27,15 +28,15 @@ class Person(object):
 
 class Staff(Person):
 
-    def __init__(self, name):
-        super(self.__class__, self).__init__(name)
+    def __init__(self, name, id=None):
+        super(self.__class__, self).__init__(name, id=id)
         self.role = Role.STAFF
 
 
 class Fellow(Person):
 
-    def __init__(self, name, accommodation='N'):
-        super(self.__class__, self).__init__(name)
+    def __init__(self, name, accommodation='N', id=None):
+        super(self.__class__, self).__init__(name, id=id)
         self.accommodation = accommodation
         self.living_space = None
         self.role = Role.FELLOW
