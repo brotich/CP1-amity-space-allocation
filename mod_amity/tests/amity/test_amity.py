@@ -34,6 +34,15 @@ class AmityTestCase(TestCase):
         self.assertIsNone(fellow.living_space)
         self.assertEqual("Hogwarts", fellow.office)
 
+    def test_create_fellow_with_accommodation(self):
+        name = fake.first_name() + " " + fake.last_name()
+        self.amity.create_living_space("Shell")
+        self.amity.create_office("Hogwarts")
+        fellow = self.amity.create_fellow(name, accommodation='Y')
+
+        self.assertEqual("Shell", fellow.living_space)
+        self.assertEqual("Hogwarts", fellow.office)
+
     def test_create_staff(self):
         name = fake.first_name() + " " + fake.last_name()
         self.amity.create_living_space("Shell")
