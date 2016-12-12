@@ -1,4 +1,6 @@
 from __future__ import print_function
+
+import random
 from unittest import TestCase
 
 from mod_amity.amity import Amity
@@ -96,3 +98,19 @@ class AmityTestCase(TestCase):
 
         self.assertIn(office_name, [room.name for room in self.amity.get_rooms()["offices"]])
         self.assertIn(living_space_name, [room.name for room in self.amity.get_rooms()["living_spaces"]])
+
+    def test_search_person_by_name(self):
+        staff_names = [(fake.first_name() + " " + fake.last_name()) for i in range(3)]
+        fellow_names = [(fake.first_name() + " " + fake.last_name()) for i in range(3)]
+
+        for staff_name in staff_names:
+            self.amity.create_staff(staff_name)
+
+        for fellow_name in fellow_names:
+            self.amity.create_staff(fellow_name)
+
+        random_staff = random.choice(staff_names)
+        random_fellow = random.choice(fellow_names)
+
+        self.assertIn(random_staff, [person.name for person in self.amity.find_person(random_staff)])
+        self.assertEqual(random_fellow, [person.name for person in self.amity.find_person(fellow_names)])

@@ -98,3 +98,6 @@ class Amity(object):
         elif person.role == Role.FELLOW:
             if person.living_space is not None and person.office is not None:
                 self.allocated_fellows.append(person)
+
+    def find_person(self, name):
+        pass
