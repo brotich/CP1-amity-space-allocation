@@ -75,10 +75,11 @@ class AmityTestCase(TestCase):
 
     def test_raise_error_on_creating_existing_living_space(self):
         living_space_name = "Perl"
+        self.amity.create_living_space(living_space_name)
 
-        self.amity.create_living_space("Perl")
-
-        self.amity.create_living_space("Perl")
+        with self.assertRaises(ValueError) as exception:
+            self.amity.create_living_space("Perl")
+            self.assertIn("Room with same name exists", exception)
 
 
 
