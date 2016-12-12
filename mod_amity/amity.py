@@ -1,3 +1,4 @@
+from __future__ import print_function
 import random
 
 from mod_amity.models import Office, LivingSpace, Fellow, Staff, Role
@@ -5,11 +6,12 @@ from mod_amity.models import Office, LivingSpace, Fellow, Staff, Role
 
 class Amity(object):
     def __init__(self):
-        self.offices = {
+        self.living_spaces = {
             "available": [],
             "unavailable": []
         }
-        self.living_spaces = {
+
+        self.offices = {
             "available": [],
             "unavailable": []
         }
@@ -27,6 +29,9 @@ class Amity(object):
         self.offices["available"].append(Office(name))
 
     def create_living_space(self, name):
+        if self.get_room(name) is not None:
+            print("Is not available")
+            return
         self.living_spaces["available"].append(LivingSpace(name))
 
     def create_fellow(self, name, accommodation='N'):
@@ -77,8 +82,11 @@ class Amity(object):
     def get_room(self, room_name=None):
         offices = self.offices["unavailable"] + self.offices["available"]
         living_spaces = self.living_spaces["unavailable"] + self.living_spaces["available"]
+        rooms = offices + living_spaces
 
-        return [room for room in (offices + living_spaces) if room.name == room_name][0]
+        for room in rooms:
+            if room.name == room_name:
+                return room
 
     def get_staff_id(self):
         staff_id = self.ids["staff"][0] + 1

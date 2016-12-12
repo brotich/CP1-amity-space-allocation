@@ -1,6 +1,8 @@
 from __future__ import print_function
 from unittest import TestCase
 
+import mock
+
 from mod_amity.amity import Amity
 from mod_amity.tests.amity import fake
 
@@ -70,5 +72,13 @@ class AmityTestCase(TestCase):
 
         self.assertEqual(office_name, self.amity.get_room(office_name).name)
         self.assertEqual(living_space_name, self.amity.get_room(living_space_name).name)
+
+    def test_raise_error_on_creating_existing_living_space(self):
+        living_space_name = "Perl"
+
+        self.amity.create_living_space("Perl")
+
+        self.amity.create_living_space("Perl")
+
 
 
