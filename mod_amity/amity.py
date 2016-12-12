@@ -16,6 +16,10 @@ class Amity(object):
         self.fellows = []
         self.staff = []
         self.people = self.fellows + self.staff
+        self.ids = {
+            "fellow": [0],
+            "staff": [0]
+        }
 
     def create_office(self, name):
         self.offices["available"].append(Office(name))
@@ -24,14 +28,14 @@ class Amity(object):
         self.living_spaces["available"].append(LivingSpace(name))
 
     def create_fellow(self, name, accommodation='N'):
-        fellow = Fellow(name, accommodation=accommodation)
+        fellow = Fellow(name, accommodation=accommodation, id=self.get_fellow_id())
         self.fellows.append(fellow)
         self.allocate_person(fellow)
 
         return fellow
 
     def create_staff(self, name):
-        staff = Staff(name)
+        staff = Staff(name, id=self.get_staff_id())
         self.staff.append(staff)
         self.allocate_person(staff)
 
@@ -65,3 +69,13 @@ class Amity(object):
 
     def get_rooms(self, room_name=None):
         pass
+
+    def get_staff_id(self):
+        staff_id = self.ids["staff"][0] + 1
+        self.ids["staff"][0] = staff_id
+        return "ST{0}".format(str(staff_id).rjust(3, '0'))
+
+    def get_fellow_id(self):
+        staff_id = self.ids["fellow"][0] + 1
+        self.ids["fellow"][0] = staff_id
+        return "FL{0}".format(str(staff_id).rjust(3, '0'))
