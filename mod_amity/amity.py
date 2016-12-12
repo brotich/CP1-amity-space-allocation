@@ -66,8 +66,13 @@ class Amity(object):
                     self.living_spaces["unavailable"].append(living_space)
                     self.living_spaces["available"].remove(living_space)
 
+        self.check_person_allocation(person)
+
     def get_unallocated_persons(self):
-        pass
+        return {
+            "staff": list(set(self.staff) - set(self.allocated_staff)),
+            "fellows": list(set(self.fellows) - set(self.allocated_fellows))
+        }
 
     def get_rooms(self, room_name=None):
         pass
@@ -81,3 +86,12 @@ class Amity(object):
         staff_id = self.ids["fellow"][0] + 1
         self.ids["fellow"][0] = staff_id
         return "FL{0}".format(str(staff_id).rjust(3, '0'))
+
+    def check_person_allocation(self, person):
+        if person.role == Role.STAFF:
+            if person.office is not None:
+                self.allocated_staff.append(person)
+
+        elif person.role == Role.FELLOW:
+            if person.living_space is not None and person.office is not None:
+                self.allocated_fellows.append(person)
