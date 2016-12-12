@@ -100,4 +100,8 @@ class Amity(object):
                 self.allocated_fellows.append(person)
 
     def find_person(self, name):
-        pass
+        match = []
+        for person in (self.fellows + self.staff):
+            if name in person.name:
+                match.append(person)
+        return match

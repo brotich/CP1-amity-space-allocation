@@ -107,10 +107,10 @@ class AmityTestCase(TestCase):
             self.amity.create_staff(staff_name)
 
         for fellow_name in fellow_names:
-            self.amity.create_staff(fellow_name)
+            self.amity.create_fellow(fellow_name)
 
         random_staff = random.choice(staff_names)
         random_fellow = random.choice(fellow_names)
 
         self.assertIn(random_staff, [person.name for person in self.amity.find_person(random_staff)])
-        self.assertEqual(random_fellow, [person.name for person in self.amity.find_person(fellow_names)])
+        self.assertIn(random_fellow, [person.name for person in self.amity.find_person(random_fellow)])
