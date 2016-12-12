@@ -61,3 +61,14 @@ class AmityTestCase(TestCase):
         fellow = self.amity.create_fellow(fellow_name)
 
         self.assertDictEqual({"fellows": [fellow], "staff": [staff]}, self.amity.get_unallocated_persons())
+
+    def test_return_room_object_on_existing_room(self):
+        office_name = "Krypton"
+        living_space_name = "Peri"
+        self.amity.create_office(office_name)
+        self.amity.create_living_space(living_space_name)
+
+        self.assertEqual(office_name, self.amity.get_room(office_name).name)
+        self.assertEqual(living_space_name, self.amity.get_room(living_space_name).name)
+
+
