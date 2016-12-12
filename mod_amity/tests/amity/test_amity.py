@@ -114,3 +114,4 @@ class AmityTestCase(TestCase):
 
         self.assertIn(random_staff, [person.name for person in self.amity.find_person(random_staff)])
         self.assertIn(random_fellow, [person.name for person in self.amity.find_person(random_fellow)])
+        self.assertEqual([], self.amity.find_person("Kimani Johns"))
