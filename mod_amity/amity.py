@@ -74,8 +74,11 @@ class Amity(object):
             "fellows": list(set(self.fellows) - set(self.allocated_fellows))
         }
 
-    def get_rooms(self, room_name=None):
-        pass
+    def get_room(self, room_name=None):
+        offices = self.offices["unavailable"] + self.offices["available"]
+        living_spaces = self.living_spaces["unavailable"] + self.living_spaces["available"]
+
+        return [room for room in (offices + living_spaces) if room.name == room_name][0]
 
     def get_staff_id(self):
         staff_id = self.ids["staff"][0] + 1
