@@ -17,6 +17,8 @@ class Amity(object):
         self.allocated_fellows = []
 
     def create_office(self, name):
+        if self.get_rooms(name) is not None:
+            raise ValueError("Room with same name exists")
         self.offices["available"].append(Office(name))
 
     def create_living_space(self, name):

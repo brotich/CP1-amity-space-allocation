@@ -1,8 +1,6 @@
 from __future__ import print_function
 from unittest import TestCase
 
-import mock
-
 from mod_amity.amity import Amity
 from mod_amity.tests.amity import fake
 
@@ -88,6 +86,3 @@ class AmityTestCase(TestCase):
         with self.assertRaises(ValueError) as exception:
             self.amity.create_office(office_name)
             self.assertIn("Room with same name exists", exception)
-
-
-
