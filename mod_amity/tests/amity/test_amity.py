@@ -86,3 +86,13 @@ class AmityTestCase(TestCase):
         with self.assertRaises(ValueError) as exception:
             self.amity.create_office(office_name)
             self.assertIn("Room with same name exists", exception)
+
+    def test_gets_all_rooms(self):
+        office_name = "Krypton"
+        living_space_name = "Peri"
+
+        self.amity.create_office(office_name)
+        self.amity.create_living_space(living_space_name)
+
+        self.assertIn(office_name, [room.name for room in self.amity.get_rooms()["offices"]])
+        self.assertIn(living_space_name, [room.name for room in self.amity.get_rooms()["living_spaces"]])
