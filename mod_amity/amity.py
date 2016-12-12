@@ -6,21 +6,12 @@ from mod_amity.models import Office, LivingSpace, Fellow, Staff, Role
 
 class Amity(object):
     def __init__(self):
-        self.living_spaces = {
-            "available": [],
-            "unavailable": []
-        }
+        self.living_spaces = dict(available=[], unavailable=[])
 
-        self.offices = {
-            "available": [],
-            "unavailable": []
-        }
+        self.offices = dict(available=[], unavailable=[])
         self.fellows = []
         self.staff = []
-        self.ids = {
-            "fellow": [0],
-            "staff": [0]
-        }
+        self.ids = dict(fellow=[0], staff=[0])
 
         self.allocated_staff = []
         self.allocated_fellows = []
@@ -29,7 +20,7 @@ class Amity(object):
         self.offices["available"].append(Office(name))
 
     def create_living_space(self, name):
-        if self.get_room(name) is not None:
+        if self.get_rooms(name) is not None:
             print("Is not available")
             return
         self.living_spaces["available"].append(LivingSpace(name))
@@ -74,19 +65,19 @@ class Amity(object):
         self.check_person_allocation(person)
 
     def get_unallocated_persons(self):
-        return {
-            "staff": list(set(self.staff) - set(self.allocated_staff)),
-            "fellows": list(set(self.fellows) - set(self.allocated_fellows))
-        }
+        return dict(staff=list(set(self.staff) - set(self.allocated_staff)),
+                    fellows=list(set(self.fellows) - set(self.allocated_fellows)))
 
-    def get_room(self, room_name=None):
+    def get_rooms(self, room_name=None):
         offices = self.offices["unavailable"] + self.offices["available"]
         living_spaces = self.living_spaces["unavailable"] + self.living_spaces["available"]
         rooms = offices + living_spaces
-
-        for room in rooms:
-            if room.name == room_name:
-                return room
+        if room_name is not None:
+            for room in rooms:
+                if room.name == room_name:
+                    return room
+        else:
+            return dict(living_spaces=living_spaces, offices=offices)
 
     def get_staff_id(self):
         staff_id = self.ids["staff"][0] + 1
