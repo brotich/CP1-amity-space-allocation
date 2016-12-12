@@ -105,3 +105,6 @@ class Amity(object):
             if name in person.name:
                 match.append(person)
         return match
+
+    def relocate_person(self, person_id, new_room):
+        pass

@@ -4,6 +4,7 @@ import random
 from unittest import TestCase
 
 from mod_amity.amity import Amity
+from mod_amity.models import Fellow
 from mod_amity.tests.amity import fake
 
 
@@ -115,3 +116,24 @@ class AmityTestCase(TestCase):
         self.assertIn(random_staff, [person.name for person in self.amity.find_person(random_staff)])
         self.assertIn(random_fellow, [person.name for person in self.amity.find_person(random_fellow)])
         self.assertEqual([], self.amity.find_person("Kimani Johns"))
+
+    def test_relocate_office_person(self):
+        office_names = ["Krypton", "Carmelot"]
+        living_space_names = ["Peri", "Perl"]
+        fellow_name = fake.first_name() + " " + fake.last_name()
+
+        for office_name in office_names:
+            self.amity.create_office(office_name)
+        for living_space_name in living_space_names:
+            self.amity.create_living_space(living_space_name)
+
+        fellow = self.amity.create_fellow(fellow_name)
+        office_names.remove(fellow.office)
+
+        new_office = office_names.pop()
+
+        self.amity.relocate_person(fellow.id, new_office)
+
+        self.assertEqual(new_office, fellow.office)
+
+
