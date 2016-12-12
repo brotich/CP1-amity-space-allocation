@@ -81,5 +81,13 @@ class AmityTestCase(TestCase):
             self.amity.create_living_space("Perl")
             self.assertIn("Room with same name exists", exception)
 
+    def test_raise_error_on_creating_existing_office(self):
+        office_name = "Krypton"
+        self.amity.create_office(office_name)
+
+        with self.assertRaises(ValueError) as exception:
+            self.amity.create_office(office_name)
+            self.assertIn("Room with same name exists", exception)
+
 
 

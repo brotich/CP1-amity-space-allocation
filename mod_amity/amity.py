@@ -21,8 +21,7 @@ class Amity(object):
 
     def create_living_space(self, name):
         if self.get_rooms(name) is not None:
-            print("Is not available")
-            return
+            raise ValueError("Room with same name exists")
         self.living_spaces["available"].append(LivingSpace(name))
 
     def create_fellow(self, name, accommodation='N'):
