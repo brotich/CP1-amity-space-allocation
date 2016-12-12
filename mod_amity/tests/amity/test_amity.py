@@ -6,7 +6,6 @@ from mod_amity.tests.amity import fake
 
 
 class AmityTestCase(TestCase):
-
     def setUp(self):
         self.amity = Amity()
 
@@ -54,3 +53,11 @@ class AmityTestCase(TestCase):
         self.assertEqual(name, staff.name)
         self.assertEqual("Hogwarts", staff.office)
 
+    def test_adds_unallocated_persons(self):
+        staff_name = fake.first_name() + " " + fake.last_name()
+        fellow_name = fake.first_name() + " " + fake.last_name()
+
+        staff = self.amity.create_staff(staff_name)
+        fellow = self.amity.create_fellow(fellow_name)
+
+        self.assertDictEqual({"fellows": [fellow], "staff": [staff]}, self.amity.get_unallocated_persons())

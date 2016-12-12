@@ -15,11 +15,13 @@ class Amity(object):
         }
         self.fellows = []
         self.staff = []
-        self.people = self.fellows + self.staff
         self.ids = {
             "fellow": [0],
             "staff": [0]
         }
+
+        self.allocated_staff = []
+        self.allocated_fellows = []
 
     def create_office(self, name):
         self.offices["available"].append(Office(name))
@@ -64,7 +66,7 @@ class Amity(object):
                     self.living_spaces["unavailable"].append(living_space)
                     self.living_spaces["available"].remove(living_space)
 
-    def get_unallocated_person(self):
+    def get_unallocated_persons(self):
         pass
 
     def get_rooms(self, room_name=None):
