@@ -2,6 +2,8 @@
 class Role(object):
     STAFF = 0
     FELLOW = 1
+    LIVING_SPACE = 3
+    OFFICE = 4
 
 
 class Person(object):
@@ -53,7 +55,8 @@ class Room(object):
     occupants = []
     capacity = None
 
-    def __init__(self, name,  capacity=None):
+    def __init__(self, name,  capacity=None, room_type=None):
+        self.room_type = room_type
         if not isinstance(name, str):
             raise TypeError("string expected")
         if len(name) == 0:
@@ -77,17 +80,20 @@ class Room(object):
     def is_full(self):
         return len(self.occupants) >= self.capacity
 
+    def get_type(self):
+        return self.type
+
 
 class Office(Room):
 
     def __init__(self, name):
-        super(self.__class__, self).__init__(name, 6)
+        super(self.__class__, self).__init__(name, 6, Role.OFFICE)
 
 
 class LivingSpace(Room):
 
     def __init__(self, name):
-        super(self.__class__, self).__init__(name, 4)
+        super(self.__class__, self).__init__(name, 4, Role.LIVING_SPACE)
 
 
 

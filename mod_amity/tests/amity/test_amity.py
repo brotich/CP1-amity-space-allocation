@@ -113,9 +113,9 @@ class AmityTestCase(TestCase):
         random_staff = random.choice(staff_names)
         random_fellow = random.choice(fellow_names)
 
-        self.assertIn(random_staff, [person.name for person in self.amity.find_person(random_staff)])
-        self.assertIn(random_fellow, [person.name for person in self.amity.find_person(random_fellow)])
-        self.assertEqual([], self.amity.find_person("Kimani Johns"))
+        self.assertIn(random_staff, [person.name for person in self.amity.find_person_by_name(random_staff)])
+        self.assertIn(random_fellow, [person.name for person in self.amity.find_person_by_name(random_fellow)])
+        self.assertEqual([], self.amity.find_person_by_name("Kimani Johns"))
 
     def test_relocate_office_person(self):
         office_names = ["Krypton", "Carmelot"]

@@ -99,12 +99,21 @@ class Amity(object):
             if person.living_space is not None and person.office is not None:
                 self.allocated_fellows.append(person)
 
-    def find_person(self, name):
+    def find_person_by_name(self, name):
         match = []
         for person in (self.fellows + self.staff):
             if name in person.name:
                 match.append(person)
         return match
 
-    def relocate_person(self, person_id, new_room):
-        pass
+    def find_person_by_id(self, person_id):
+        for person in (self.fellows + self.staff):
+            if person.id == person_id:
+                return person
+
+    def relocate_person(self, person_id, room_name):
+
+        person = self.find_person_by_id(person_id)
+        room = self.get_rooms(room_name)
+
+
