@@ -68,7 +68,7 @@ class OfficeClassTestCase(TestCase):
         office = Office(self.office_name)
 
         self.assertEqual(self.office_name, office.name)
-        self.assertEqual(6, office.get_capacity())
+        self.assertEqual(6, office.capacity)
         self.assertRaises(TypeError, Office, 123)
         self.assertRaises(ValueError, Office, "")
 

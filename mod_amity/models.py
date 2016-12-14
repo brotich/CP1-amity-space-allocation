@@ -7,6 +7,10 @@ class Role(object):
 
 
 class Person(object):
+    """
+    Boiler-plate class for creating a person instance.
+    Its inherited to form Fellows and Staff subclasses
+    """
 
     def __init__(self, name, id=None):
 
@@ -21,14 +25,11 @@ class Person(object):
         self.role = None
         self.id = id
 
-    def assign_office(self, office):
-        self.office = office
+    def assign_office(self, office_name):
+        self.office = office_name
 
     def get_role(self):
         return self.role
-
-    def __eq__(self, person_id):
-        return self.id == person_id
 
 
 class Staff(Person):
@@ -54,6 +55,11 @@ class Fellow(Person):
 
 class Room(object):
 
+    """
+    Boiler plat class for the rooms available in amity.
+    It defines the occupants of a room and the capacity of the room
+    """
+
     name = None
     occupants = []
     capacity = None
@@ -71,30 +77,40 @@ class Room(object):
         self.type = room_type
 
     def allocate_space(self, person):
-        if not len(self.occupants) < self.capacity:
+        if self.is_full():
             raise ValueError("Room is full")
         if not isinstance(person, Person):
-            raise TypeError("office assigned to fellow or staff")
+            raise TypeError("Rooms assigned to fellow or staff")
 
         self.occupants.append(person)
-
-    def get_capacity(self):
-        return self.capacity
 
     def is_full(self):
         return len(self.occupants) >= self.capacity
 
 
 class Office(Room):
+    """
+    Office capacity limited to 6 occupants.
+    """
 
     def __init__(self, name):
         super(self.__class__, self).__init__(name, 6, Role.OFFICE)
 
 
 class LivingSpace(Room):
+    """
+    Living space to 4 occupants.
+    Constraints: can only be assigned to fellows that requested accommodation
+    """
 
     def __init__(self, name):
         super(self.__class__, self).__init__(name, 4, Role.LIVING_SPACE)
+
+    def allocate_space(self, person):
+
+        if not isinstance(person, Fellow):
+            raise TypeError("Staff cannot be allocate Living Space")
+        super(self.__class__, self).allocate_space(person)
 
 
 

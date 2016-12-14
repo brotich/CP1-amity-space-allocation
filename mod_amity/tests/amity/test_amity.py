@@ -4,7 +4,6 @@ import random
 from unittest import TestCase
 
 from mod_amity.amity import Amity
-from mod_amity.models import Fellow
 from mod_amity.tests.amity import fake
 
 
