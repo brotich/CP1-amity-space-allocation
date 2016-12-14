@@ -181,6 +181,10 @@ class Amity(object):
         elif new_room.type == Role.LIVING_SPACE:
             old_room = self.get_rooms(person.living_space)
 
+        # check new room is same types as new room
+        if not old_room.type == new_room.type:
+            raise ValueError("can only relocate to rooms of same type")
+
         for occupant in old_room.occupants:
             if occupant.id == person_id:
                 old_room.occupants.remove(occupant)
