@@ -114,6 +114,37 @@ class Amity(object):
     def relocate_person(self, person_id, room_name):
 
         person = self.find_person_by_id(person_id)
-        room = self.get_rooms(room_name)
+        new_room = self.get_rooms(room_name)
+
+        if not person:
+            raise ValueError("Cannot Find person with id" + person_id)
+
+        if new_room.is_full():
+            raise ValueError("{} is full. Cannot relocate person".format(room_name))
+
+        old_room = None
+
+        if new_room.type == Role.OFFICE:
+            old_room = self.get_rooms(person.office)
+        elif new_room.type == Role.LIVING_SPACE:
+            old_room = self.get_rooms(person.living_space)
+
+        for occupant in old_room.occupants:
+            if occupant.id == person_id:
+                old_room.occupants.remove(occupant)
+                new_room.allocate_space(occupant)
+
+                if new_room.type == Role.OFFICE:
+                    occupant.office = new_room.name
+                elif new_room.type == Role.LIVING_SPACE:
+                    occupant.living_space = new_room.name
+
+        return dict(person=person, new_room=new_room)
+
+
+
+
+
+
 
 

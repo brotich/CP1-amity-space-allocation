@@ -117,7 +117,7 @@ class AmityTestCase(TestCase):
         self.assertIn(random_fellow, [person.name for person in self.amity.find_person_by_name(random_fellow)])
         self.assertEqual([], self.amity.find_person_by_name("Kimani Johns"))
 
-    def test_relocate_office_person(self):
+    def test_relocate_fellow(self):
         office_names = ["Krypton", "Carmelot"]
         living_space_names = ["Peri", "Perl"]
         fellow_name = fake.first_name() + " " + fake.last_name()
@@ -127,13 +127,17 @@ class AmityTestCase(TestCase):
         for living_space_name in living_space_names:
             self.amity.create_living_space(living_space_name)
 
-        fellow = self.amity.create_fellow(fellow_name)
+        fellow = self.amity.create_fellow(fellow_name, accommodation='Y')
         office_names.remove(fellow.office)
+        living_space_names.remove(fellow.living_space)
 
         new_office = office_names.pop()
+        new_living_space = living_space_names.pop()
 
         self.amity.relocate_person(fellow.id, new_office)
+        self.amity.relocate_person(fellow.id, new_living_space)
 
         self.assertEqual(new_office, fellow.office)
+        self.assertEqual(new_living_space, fellow.living_space)
 
 

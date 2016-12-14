@@ -27,6 +27,9 @@ class Person(object):
     def get_role(self):
         return self.role
 
+    def __eq__(self, person_id):
+        return self.id == person_id
+
 
 class Staff(Person):
 
@@ -65,6 +68,7 @@ class Room(object):
         self.name = name
         self.occupants = []
         self.capacity = capacity
+        self.type = room_type
 
     def allocate_space(self, person):
         if not len(self.occupants) < self.capacity:
@@ -79,9 +83,6 @@ class Room(object):
 
     def is_full(self):
         return len(self.occupants) >= self.capacity
-
-    def get_type(self):
-        return self.type
 
 
 class Office(Room):
