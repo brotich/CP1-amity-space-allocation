@@ -116,6 +116,26 @@ class AmityRun(cmd.Cmd):
                 print ("No vacant Living Space to allocate")
 
     @docopt_cmd
+    def do_create_room(self, args):
+        """Usage: create_room <room_type> <room_names>..."""
+        room_type = args["<room_type>"].upper()
+
+        if room_type not in ["LIVING", "OFFICE"]:
+            print ("Invalid Command: valid room names 'LIVING', 'OFFICE']")
+            return
+
+        room_names = args['<room_names>']
+
+        if room_type == "LIVING":
+            for room_name in room_names:
+                amity.create_living_space(room_name)
+        elif room_type == "OFFICE":
+            for room_name in room_names:
+                amity.create_office(room_name)
+
+        print ("Created {} rooms: {}".format(room_type, ", ".join(room_names)))
+
+    @docopt_cmd
     def do_print_unallocated(self, args):
         """Usage: print_unallocated"""
 
