@@ -1,9 +1,9 @@
 
 class Role(object):
-    STAFF = 0
-    FELLOW = 1
-    LIVING_SPACE = 3
-    OFFICE = 4
+    STAFF = "Staff"
+    FELLOW = "Fellow"
+    LIVING_SPACE = "Living Space"
+    OFFICE = "Office"
 
 
 class Person(object):
@@ -13,9 +13,6 @@ class Person(object):
     """
 
     def __init__(self, name, id=None):
-
-        if isinstance(name, str):
-            raise TypeError("name should be string")
 
         if len(name) == 0:
             raise ValueError("name cannot empty")
@@ -43,6 +40,8 @@ class Fellow(Person):
 
     def __init__(self, name, accommodation='N', id=None):
         super(self.__class__, self).__init__(name, id=id)
+        if accommodation not in ['N', 'Y']:
+            raise ValueError("accommodation should be Y or N")
         self.accommodation = accommodation
         self.living_space = None
         self.role = Role.FELLOW

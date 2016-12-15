@@ -11,6 +11,7 @@ class Amity(object):
                         Person and subclass
     from models.py. It also creates and perform operations to manage allocations on the available rooms in amity
     """
+
     def __init__(self):
         self.living_spaces = dict(available=[], unavailable=[])
 
@@ -215,12 +216,3 @@ class Amity(object):
                 self.living_spaces["available"].append(living_space)
                 if office.name in [name for name in self.living_spaces["unavailable"]]:
                     self.living_spaces["unavailable"].remove(living_space)
-
-
-
-
-
-
-
-
-
