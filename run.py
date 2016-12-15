@@ -115,7 +115,29 @@ class AmityRun(cmd.Cmd):
             else:
                 print ("No vacant Living Space to allocate")
 
+    @docopt_cmd
+    def do_print_unallocated(self, args):
+        """Usage: print_unallocated"""
 
+        unallocated = amity.get_unallocated_persons()
+
+        print ("Staff")
+        print ("="*75)
+        if unallocated["staff"]:
+            for staff in unallocated["staff"]:
+                print ("    {} {}".format(staff.id,staff.name))
+        else:
+            print ("All Staff Allocated")
+        print ("=" * 75)
+        print ("")
+        print ("Fellow")
+        print ("=" * 75)
+        if unallocated["fellows"]:
+            for fellow in unallocated["fellows"]:
+                print ("    {} {}".format(fellow.id, fellow.name))
+        else:
+            print ("All fellows Allocated")
+        print ("=" * 75)
 
     def do_clear(self, arg):
         """Clears screen>"""
