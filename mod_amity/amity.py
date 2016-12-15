@@ -191,7 +191,7 @@ class Amity(object):
                 break
         self.check_room_availability()
 
-        return dict(person=person, new_room=new_room)
+        return dict(person=person.id, new_room=new_room.name, old_room=old_room.name)
 
     def check_room_availability(self):
         """

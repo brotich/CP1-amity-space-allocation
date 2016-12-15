@@ -63,7 +63,7 @@ amity = Amity()
 class AmityRun(cmd.Cmd):
     intro = 'Welcome to Amity' \
             + ' (type help for a list of commands.)'
-    prompt = '(Amity) '
+    prompt = '(amity) '
     file = None
 
     @docopt_cmd
@@ -133,6 +133,19 @@ class AmityRun(cmd.Cmd):
         print ("Created {} rooms: {}".format(room_type, ", ".join(room_names)))
 
     @docopt_cmd
+    def do_reallocate_person(self, args):
+        """Usage:
+                reallocate_person <person_id> <new_room_name>
+        """
+        person_id = args['<person_id>'].upper()
+        new_room_name = args['<new_room_name>']
+
+        relocate_data = amity.relocate_person(person_id, new_room_name)
+
+        print ("{} relocated from {} to {}".format(relocate_data['person'], relocate_data['old_room'],
+                                                   relocate_data['new_room']))
+
+    @docopt_cmd
     def do_print_unallocated(self, args):
         """Usage: print_unallocated"""
 
@@ -165,10 +178,10 @@ class AmityRun(cmd.Cmd):
         room = amity.get_rooms(room_name)
 
         print ("room: {}".format(room.name))
-        print ("="*25)
+        print ("=" * 25)
         print ("Allocations: ")
         for i, person in enumerate(room.occupants):
-            print ("   {}. {} {}".format(i+1, person.id, person.name))
+            print ("   {}. {} {}".format(i + 1, person.id, person.name))
 
     def do_clear(self, arg):
         """Clears screen>"""
