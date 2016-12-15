@@ -55,27 +55,20 @@ class Amity(object):
         :return: person object with allocations, if any
         """
         office = random.choice(self.offices["available"]) if len(self.offices["available"]) > 0 else None
-        living_space = random.choice(self.living_spaces["available"]) \
-            if len(self.living_spaces["available"]) > 0 else None
 
         if office is not None:
             office.allocate_space(person)
             person.assign_office(office.name)
 
-            if office.is_full():
-                self.offices["unavailable"].append(office)
-                self.offices["available"].remove(office)
-
         if person.role == Role.FELLOW:
+            living_space = random.choice(self.living_spaces["available"]) \
+                if len(self.living_spaces["available"]) > 0 else None
             if living_space is not None and person.accommodation == 'Y':
                 living_space.allocate_space(person)
                 person.assign_living_space(living_space.name)
 
-                if living_space.is_full():
-                    self.living_spaces["unavailable"].append(living_space)
-                    self.living_spaces["available"].remove(living_space)
-
         self.check_person_allocation(person)
+        self.check_room_availability()
 
         return person
 
@@ -194,8 +187,35 @@ class Amity(object):
                     occupant.office = new_room.name
                 elif new_room.type == Role.LIVING_SPACE:
                     occupant.living_space = new_room.name
+                break
+        self.check_room_availability()
 
         return dict(person=person, new_room=new_room)
+
+    def check_room_availability(self):
+        """
+        check for state of room occupants and moves rooms to available/unavailable as needed
+        """
+        for office in (self.offices["available"] + self.offices["unavailable"]):
+            if office.is_full():
+                self.offices["unavailable"].append(office)
+                if office.name in [name for name in self.offices["available"]]:
+                    self.offices["available"].remove(office)
+            else:
+                self.offices["available"].append(office)
+                if office.name in [name for name in self.offices["unavailable"]]:
+                    self.offices["unavailable"].remove(office)
+
+        for living_space in (self.living_spaces["available"] + self.living_spaces["unavailable"]):
+            if living_space.is_full():
+                self.living_spaces["unavailable"].append(living_space)
+                if office.name in [name for name in self.living_spaces["available"]]:
+                    self.living_spaces["available"].remove(living_space)
+            else:
+                self.living_spaces["available"].append(living_space)
+                if office.name in [name for name in self.living_spaces["unavailable"]]:
+                    self.living_spaces["unavailable"].remove(living_space)
+
 
 
 
