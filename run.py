@@ -5,13 +5,10 @@ Usage:
     amity create_room <room_name>...
     amity add_person <first_name> <last_name> (Fellow|Staff) [<wants_accomodation>]
     amity reallocate_person <person_name> <new_room_name>
-    amity remove_person <person_identifier>
     amity load_people <filename>
     amity print_allocations [-o <filename>]
     amity print_unallocated [-o <filename>]
     amity print_room <room_name>
-    amity save_state [--db=sqlite_database]
-    amity load_state <sqlite_database>
     amity (-i | --interactive)
     amity (-h | --help)
 Options:
@@ -142,10 +139,10 @@ class AmityRun(cmd.Cmd):
         unallocated = amity.get_unallocated_persons()
 
         print ("Staff")
-        print ("="*75)
+        print ("=" * 75)
         if unallocated["staff"]:
             for staff in unallocated["staff"]:
-                print ("    {} {}".format(staff.id,staff.name))
+                print ("    {} {}".format(staff.id, staff.name))
         else:
             print ("All Staff Allocated")
         print ("=" * 75)
@@ -158,6 +155,20 @@ class AmityRun(cmd.Cmd):
         else:
             print ("All fellows Allocated")
         print ("=" * 75)
+
+    @docopt_cmd
+    def do_print_room(self, args):
+        """Usage:
+        print_room <room_name>
+        """
+        room_name = args["<room_name>"]
+        room = amity.get_rooms(room_name)
+
+        print ("room: {}".format(room.name))
+        print ("="*25)
+        print ("Allocations: ")
+        for i, person in enumerate(room.occupants):
+            print ("   {}. {} {}".format(i+1, person.id, person.name))
 
     def do_clear(self, arg):
         """Clears screen>"""
