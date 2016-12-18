@@ -216,3 +216,6 @@ class Amity(object):
                 self.living_spaces["available"].append(living_space)
                 if living_space.name in [name for name in self.living_spaces["unavailable"]]:
                     self.living_spaces["unavailable"].remove(living_space)
+
+    def load_people(self, file_name):
+        pass

@@ -158,3 +158,10 @@ class AmityTestCase(TestCase):
 
         self.assertEqual(new_office, staff.office)
 
+    def test_load_people(self):
+        file_name = "sample.txt"
+        self.amity.load_people(file_name)
+
+        self.assertEqual(3, len(self.amity.staff))
+        self.assertEqual(4, len(self.amity.fellows))
+
