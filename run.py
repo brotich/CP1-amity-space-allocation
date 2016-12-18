@@ -96,7 +96,7 @@ class AmityRun(cmd.Cmd):
                 print ("Invalid: wants_accommodation values are 'Y' or 'N'")
                 return
 
-            fellow = amity.create_fellow(name, accommodation='N')
+            fellow = amity.create_fellow(name, accommodation=wants_accommodation)
 
             print ("{} created successfully".format(fellow.role))
             print ("    ID:   {}".format(fellow.id))
@@ -107,10 +107,12 @@ class AmityRun(cmd.Cmd):
                 print ("allocated Office {} ".format(fellow.office))
             else:
                 print ("No vacant Office to allocate")
-            if fellow.living_space:
-                print ("allocated Living Space {} ".format(fellow.living_space))
-            else:
-                print ("No vacant Living Space to allocate")
+
+            if fellow.accommodation == 'Y':
+                if fellow.living_space:
+                    print ("allocated Living Space {} ".format(fellow.living_space))
+                else:
+                    print ("No vacant Living Space to allocate")
 
     @docopt_cmd
     def do_create_room(self, args):
@@ -182,6 +184,19 @@ class AmityRun(cmd.Cmd):
         print ("Allocations: ")
         for i, person in enumerate(room.occupants):
             print ("   {}. {} {}".format(i + 1, person.id, person.name))
+
+    @docopt_cmd
+    def do_print_allocations(self, args):
+        """Usage:
+                print_allocations
+                """
+        rooms = amity.get_rooms()
+        print ("Living Spaces")
+        print ("=" * 25)
+        for living_space in rooms['living_spaces']:
+            print ("Allocations: ")
+            # for i, person in enumerate(living_space.occupants):
+            #     print ("   {}. {} {}".format(i + 1, person.id, person.name))
 
     def do_clear(self, arg):
         """Clears screen>"""

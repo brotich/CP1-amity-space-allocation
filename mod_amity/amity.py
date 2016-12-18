@@ -210,9 +210,9 @@ class Amity(object):
         for living_space in (self.living_spaces["available"] + self.living_spaces["unavailable"]):
             if living_space.is_full():
                 self.living_spaces["unavailable"].append(living_space)
-                if office.name in [name for name in self.living_spaces["available"]]:
+                if living_space.name in [name for name in self.living_spaces["available"]]:
                     self.living_spaces["available"].remove(living_space)
             else:
                 self.living_spaces["available"].append(living_space)
-                if office.name in [name for name in self.living_spaces["unavailable"]]:
+                if living_space.name in [name for name in self.living_spaces["unavailable"]]:
                     self.living_spaces["unavailable"].remove(living_space)
