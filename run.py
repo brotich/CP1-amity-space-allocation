@@ -93,7 +93,7 @@ class AmityRun(cmd.Cmd):
         else:
             print("No vacant office to allocate")
         if person.role == Role.FELLOW and person.accommodation == 'Y':
-            if person.living_space is None:
+            if person.living_space is None :
                 print("allocate living space at {} ".format(person.living_space))
             else:
                 print("No vacant living spaces")
