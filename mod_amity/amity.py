@@ -37,12 +37,12 @@ class Amity(object):
     def add_person(self, name, role, accommodation):
 
         if role == Role.STAFF:
-            self.create_staff(name)
+            return self.create_staff(name)
         elif role == Role.FELLOW:
             if accommodation:
-                self.create_fellow(name, accommodation)
+                return self.create_fellow(name, accommodation)
             else:
-                self.create_fellow(name)
+                return self.create_fellow(name)
 
     def create_fellow(self, name, accommodation='N'):
         fellow = Fellow(name, accommodation=accommodation, id=self.generate_fellow_id())
@@ -209,29 +209,20 @@ class Amity(object):
         check for state of room occupants and moves rooms to available/unavailable as needed
         """
         for office in (self.offices["available"] + self.offices["unavailable"]):
+            # TODO fix check room to use _eq_on name
             if office.is_full():
                 self.offices["unavailable"].append(office)
-                if office.name in [name for name in self.offices["available"]]:
-                    self.offices["available"].remove(office)
-            else:
-                self.offices["available"].append(office)
-                if office.name in [name for name in self.offices["unavailable"]]:
-                    self.offices["unavailable"].remove(office)
-
+                self.offices["available"].remove(office)
         for living_space in (self.living_spaces["available"] + self.living_spaces["unavailable"]):
             if living_space.is_full():
                 self.living_spaces["unavailable"].append(living_space)
-                if living_space.name in [name for name in self.living_spaces["available"]]:
-                    self.living_spaces["available"].remove(living_space)
-            else:
-                self.living_spaces["available"].append(living_space)
-                if living_space.name in [name for name in self.living_spaces["unavailable"]]:
-                    self.living_spaces["unavailable"].remove(living_space)
+                self.living_spaces["available"].remove(living_space)
 
     def load_people(self, file_name):
-        people_data = file_storage.read_from_file(file_name)
 
-        for person in people_data:
+        people = []
+
+        for person in file_storage.read_from_file(file_name):
             name = " {} {}".format(person[0], person[1])
             role = person[2]
 
@@ -239,7 +230,10 @@ class Amity(object):
                 accommodation = person[3]
             except IndexError:
                 accommodation = None
-
-            self.add_person(name, role, accommodation)
+            try:
+                people.append(self.add_person(name, role, accommodation))
+            except Exception:
+                pass
+        return people
 
 

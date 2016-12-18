@@ -189,14 +189,26 @@ class AmityRun(cmd.Cmd):
     def do_print_allocations(self, args):
         """Usage:
                 print_allocations
-                """
+        """
         rooms = amity.get_rooms()
         print ("Living Spaces")
         print ("=" * 25)
         for living_space in rooms['living_spaces']:
-            print ("Allocations: ")
-            # for i, person in enumerate(living_space.occupants):
-            #     print ("   {}. {} {}".format(i + 1, person.id, person.name))
+            print (" {} ".format(living_space.name))
+            for i, person in enumerate(living_space.occupants):
+                print ("   {}. {} {}".format(i + 1, person.id, person.name))
+
+    @docopt_cmd
+    def do_load_people(self, args):
+        """
+        Usage:
+            load_people <file_name>
+        """
+        file_name = args['<file_name>']
+        loaded_people = amity.load_people(os.path.dirname(os.path.realpath(__file__)) + "/" + file_name)
+
+        for person in loaded_people:
+            print ("{} {}".format(person.name, person.role))
 
     def do_clear(self, arg):
         """Clears screen>"""
