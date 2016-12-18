@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import os
 import random
 from unittest import TestCase
 
@@ -160,7 +161,8 @@ class AmityTestCase(TestCase):
 
     def test_load_people(self):
         file_name = "sample.txt"
-        self.amity.load_people(file_name)
+        file_path = os.path.dirname(os.path.realpath(__file__))+"/" + file_name
+        self.amity.load_people(file_path)
 
         self.assertEqual(3, len(self.amity.staff))
         self.assertEqual(4, len(self.amity.fellows))

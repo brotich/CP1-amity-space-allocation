@@ -2,6 +2,7 @@ from __future__ import print_function
 import random
 
 from mod_amity.models import Office, LivingSpace, Fellow, Staff, Role
+from mod_amity.util.file import FileUtil as file_storage
 
 
 class Amity(object):
@@ -32,6 +33,16 @@ class Amity(object):
         if self.get_rooms(name) is not None:
             raise ValueError("Room with same name exists")
         self.living_spaces["available"].append(LivingSpace(name))
+
+    def add_person(self, name, role, accommodation):
+
+        if role == Role.STAFF:
+            self.create_staff(name)
+        elif role == Role.FELLOW:
+            if accommodation:
+                self.create_fellow(name, accommodation)
+            else:
+                self.create_fellow(name)
 
     def create_fellow(self, name, accommodation='N'):
         fellow = Fellow(name, accommodation=accommodation, id=self.generate_fellow_id())
@@ -218,4 +229,17 @@ class Amity(object):
                     self.living_spaces["unavailable"].remove(living_space)
 
     def load_people(self, file_name):
-        pass
+        people_data = file_storage.read_from_file(file_name)
+
+        for person in people_data:
+            name = " {} {}".format(person[0], person[1])
+            role = person[2]
+
+            try:
+                accommodation = person[3]
+            except IndexError:
+                accommodation = None
+
+            self.add_person(name, role, accommodation)
+
+
