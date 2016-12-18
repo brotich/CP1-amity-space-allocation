@@ -227,7 +227,7 @@ class Amity(object):
             role = person[2]
 
             try:
-                accommodation = person[3]
+                accommodation = person[3]  # TODO find source od error of room full
             except IndexError:
                 accommodation = None
             try:
