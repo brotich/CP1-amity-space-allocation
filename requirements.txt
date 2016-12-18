@@ -1,3 +1,5 @@
+tabulate
+clint
 docopt
 colorama==0.3.7
 coverage==4.2
@@ -10,5 +12,4 @@ nose-exclude==0.5.0
 pbr==1.10.0
 python-dateutil==2.6.0
 python-termstyle==0.1.10
-rednose==1.2.1
 six==1.10.0

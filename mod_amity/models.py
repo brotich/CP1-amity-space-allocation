@@ -1,7 +1,7 @@
 
 class Role(object):
-    STAFF = "Staff"
-    FELLOW = "Fellow"
+    STAFF = "STAFF"
+    FELLOW = "FELLOW"
     LIVING_SPACE = "Living Space"
     OFFICE = "Office"
 
