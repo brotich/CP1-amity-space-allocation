@@ -19,7 +19,7 @@ class RoomDB(Base):
              ("office", "Office")]
 
     id = Column(Integer, primary_key=True)
-    name = Column(Unicode, unique=True)
+    name = Column(Unicode)
     type = Column(ChoiceType(TYPES))
 
     def __init__(self, name, room_type):
@@ -30,7 +30,7 @@ class RoomDB(Base):
 class FellowDB(Base):
     __tablename__ = 'fellows'
     id = Column(Integer, primary_key=True)
-    fellow_id = Column(String, unique=True)
+    fellow_id = Column(String)
     fellow_name = Column(String)
     fellow_office = Column(String)
     fellow_living_space = Column(String)

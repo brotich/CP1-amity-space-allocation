@@ -5,7 +5,7 @@ import random
 
 from mod_amity.models import Office, LivingSpace, Fellow, Staff, Role
 from mod_amity.util.db import DbUtil
-from mod_amity.util.file import FileUtil as file_storage
+from mod_amity.util.file import FileUtil as fileStorage
 
 
 class Amity(object):
@@ -17,8 +17,8 @@ class Amity(object):
     """
 
     def __init__(self):
-        self.living_spaces = dict(available=[], unavailable=[])
-        self.offices = dict(available=[], unavailable=[])
+        self.living_spaces = dict(available=[], total=[])
+        self.offices = dict(available=[], total=[])
 
         self.fellows = []
         self.staff = []
@@ -30,18 +30,20 @@ class Amity(object):
     def create_office(self, name):
         if self.get_rooms(name) is not None:
             raise ValueError("Room with same name exists")
-        self.offices["available"].append(Office(name))
+        self.offices["total"].append(Office(name))
+        self.check_room_availability()
 
     def create_living_space(self, name):
         if self.get_rooms(name) is not None:
             raise ValueError("Room with same name exists")
-        self.living_spaces["available"].append(LivingSpace(name))
+        self.living_spaces["total"].append(LivingSpace(name))
+        self.check_room_availability()
 
     def add_person(self, name, role, accommodation):
 
-        if role == Role.STAFF:
+        if role == Role.STAFF.upper():
             return self.create_staff(name)
-        elif role == Role.FELLOW:
+        elif role == Role.FELLOW.upper():
             if accommodation:
                 return self.create_fellow(name, accommodation)
             else:
@@ -101,8 +103,8 @@ class Amity(object):
         :param room_name: (optional) filter the result by name
         :return: dict of all living_spaces and offices
         """
-        offices = self.offices["unavailable"] + self.offices["available"]
-        living_spaces = self.living_spaces["unavailable"] + self.living_spaces["available"]
+        offices = self.offices["total"]
+        living_spaces = self.living_spaces["total"]
         rooms = offices + living_spaces
         if room_name is not None:
             for room in rooms:
@@ -209,25 +211,22 @@ class Amity(object):
 
     def check_room_availability(self):
         """
-        check for state of room occupants and moves rooms to available/unavailable as needed
+        check for state of room occupants and moves rooms to available as needed
         """
-        for office in (self.offices["available"] + self.offices["unavailable"]):
-            # TODO fix check room to use _eq_on name
-            if office.is_full():
-                self.offices["unavailable"].append(office)
-                self.offices["available"].remove(office)
-        for living_space in (self.living_spaces["available"] + self.living_spaces["unavailable"]):
-            if living_space.is_full():
-                self.living_spaces["unavailable"].append(living_space)
-                self.living_spaces["available"].remove(living_space)
+        for office in self.offices["total"]:
+            if not office.is_full():
+                self.offices["available"].append(office)
+        for living_space in self.living_spaces["total"]:
+            if not living_space.is_full():
+                self.living_spaces["available"].append(living_space)
 
     def load_people(self, file_name):
 
         people = []
 
-        for person in file_storage.read_from_file(file_name):
+        for person in fileStorage.read_from_file(file_name):
             name = " {} {}".format(person[0], person[1])
-            role = person[2]
+            role = person[2].upper()
 
             try:
                 accommodation = person[3]  # TODO find source od error of room full

@@ -16,14 +16,14 @@ class AmityTestCase(TestCase):
     def test_create_office(self):
         self.amity.create_office("Summer")
 
-        self.assertGreater(len(self.amity.offices["available"]), 0)
-        self.assertEqual("Summer", self.amity.offices["available"][0].name)
+        self.assertGreater(len(self.amity.offices["total"]), 0)
+        self.assertEqual("Summer", self.amity.offices["total"][0].name)
 
     def test_create_living_space(self):
         self.amity.create_living_space("Winter")
 
-        self.assertGreater(len(self.amity.living_spaces["available"]), 0)
-        self.assertEqual("Winter", self.amity.living_spaces["available"][0].name)
+        self.assertGreater(len(self.amity.living_spaces["total"]), 0)
+        self.assertEqual("Winter", self.amity.living_spaces["total"][0].name)
 
     def test_create_fellow(self):
         name = fake.first_name() + " " + fake.last_name()
