@@ -1,7 +1,10 @@
 from __future__ import print_function
+
+import os
 import random
 
 from mod_amity.models import Office, LivingSpace, Fellow, Staff, Role
+from mod_amity.util.db import DbUtil
 from mod_amity.util.file import FileUtil as file_storage
 
 
@@ -15,8 +18,8 @@ class Amity(object):
 
     def __init__(self):
         self.living_spaces = dict(available=[], unavailable=[])
-
         self.offices = dict(available=[], unavailable=[])
+
         self.fellows = []
         self.staff = []
         self.ids = dict(fellow=[0], staff=[0])
@@ -236,4 +239,15 @@ class Amity(object):
                 pass
         return people
 
+    def save_state(self, db_path):
 
+        if os.path.exists(db_path):
+            print ("deleting previous state database")
+            os.remove(db_path)
+
+        db_util = DbUtil(db_path)
+
+        rooms = self.living_spaces["unavailable"] + self.living_spaces["available"] + self.offices["unavailable"] + \
+                self.offices["available"]
+
+        db_util.save_to_db(rooms=rooms, fellows=self.fellows, staff=self.staff)

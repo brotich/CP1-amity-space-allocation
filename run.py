@@ -93,7 +93,7 @@ class AmityRun(cmd.Cmd):
         else:
             print("No vacant office to allocate")
         if person.role == Role.FELLOW and person.accommodation == 'Y':
-            if person.living_space is None :
+            if person.living_space is None:
                 print("allocate living space at {} ".format(person.living_space))
             else:
                 print("No vacant living spaces")
@@ -203,6 +203,17 @@ class AmityRun(cmd.Cmd):
             puts(tabulate([[person.id, person.name, person.role,
                             person.accommodation if person.role == Role.FELLOW else None] for person in loaded_people],
                           headers=['ID', 'NAME', 'ROLE', 'ACCOMM.'], tablefmt='orgtbl', missingval="----"))
+
+    @docopt_cmd
+    def do_save_state(self, args):
+        """
+            Usage: save_state [--db=sqlite_database]
+        """
+        db_name = "amity.sqlite"
+        if args['--db']:
+            db_name = args['--db']
+        db_path = os.path.dirname(os.path.realpath(__file__)) + "/" + db_name
+        amity.save_state(db_path)
 
     def do_clear(self, arg):
         """Clears screen>"""
