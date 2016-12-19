@@ -84,7 +84,7 @@ class Room(object):
         self.occupants.append(person)
 
     def is_full(self):
-        return len(self.occupants) >= self.capacity
+        return len(self.occupants) > self.capacity
 
 
 class Office(Room):

@@ -1,5 +1,5 @@
-import os
 
+from __future__ import print_function, unicode_literals
 from sqlalchemy import Column, DateTime, String, Integer, ForeignKey, func
 from sqlalchemy import Unicode
 from sqlalchemy.orm import Session
@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy_utils import ChoiceType
+
 
 Base = declarative_base()
 
@@ -19,7 +20,7 @@ class RoomDB(Base):
              ("office", "Office")]
 
     id = Column(Integer, primary_key=True)
-    name = Column(Unicode)
+    name = Column(Unicode, unique=True)
     type = Column(ChoiceType(TYPES))
 
     def __init__(self, name, room_type):
@@ -30,7 +31,7 @@ class RoomDB(Base):
 class FellowDB(Base):
     __tablename__ = 'fellows'
     id = Column(Integer, primary_key=True)
-    fellow_id = Column(String)
+    fellow_id = Column(String, unique=True)
     fellow_name = Column(String)
     fellow_office = Column(String)
     fellow_living_space = Column(String)
@@ -45,7 +46,7 @@ class FellowDB(Base):
 class StaffDB(Base):
     __tablename__ = 'staff'
     id = Column(Integer, primary_key=True)
-    staff_id = Column(String)
+    staff_id = Column(String, unique=True)
     staff_name = String(String)
     staff_office = String(String)
 
@@ -58,7 +59,7 @@ class StaffDB(Base):
 class DbUtil(object):
     def __init__(self, db_path):
 
-        engine = create_engine('sqlite:///{}'.format(db_path))
+        engine = create_engine('sqlite:///{}'.format(db_path), convert_unicode=True)
         Base.metadata.create_all(engine)
         self.db = Session(bind=engine)
 
@@ -79,3 +80,6 @@ class DbUtil(object):
             self.db.add(StaffDB(staff_id=staff.id, name=staff.name, office=staff.office), _warn=False)
 
         self.db.commit()
+
+    def load_state(self, db_path):
+        pass

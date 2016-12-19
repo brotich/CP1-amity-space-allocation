@@ -17,7 +17,7 @@ Options:
     -h, --help  Show this screen and exit.
 """
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 from docopt import docopt, DocoptExit
 import sys
 import os
@@ -141,23 +141,26 @@ class AmityRun(cmd.Cmd):
 
         unallocated = amity.get_unallocated_persons()
 
-        print("Staff")
-        print("=" * 75)
-        if unallocated["staff"]:
-            for staff in unallocated["staff"]:
-                print("    {} {}".format(staff.id, staff.name))
-        else:
-            print("All Staff Allocated")
-        print("=" * 75)
-        print("")
-        print("Fellow")
-        print("=" * 75)
-        if unallocated["fellows"]:
-            for fellow in unallocated["fellows"]:
-                print("    {} {}".format(fellow.id, fellow.name))
-        else:
-            print("All fellows Allocated")
-        print("=" * 75)
+        puts("Unallocated Persons")
+        with indent(4):
+            puts("1. Staff")
+            with indent(4):
+                if unallocated["staff"]:
+                    puts(tabulate([[i + 1, staff.id, staff.name] for i, staff in enumerate(unallocated["staff"])],
+                                  headers=['ID', 'NAME'], tablefmt='orgtbl', missingval="---"))
+                else:
+                    puts("All Staff Allocated")
+
+        with indent(4):
+            puts("2. Fellows")
+            with indent(4):
+                if unallocated["fellows"]:
+                    puts(tabulate([[i + 1, fellow.id, fellow.name, fellow.office, fellow.living_space] for i, fellow in
+                                   enumerate(unallocated["fellows"])],
+                                  headers=['ID', 'NAME', 'OFFICE', 'LIVING SPACE'], tablefmt='orgtbl',
+                                  missingval="---"))
+                else:
+                    puts("All Fellows Allocated")
 
     @docopt_cmd
     def do_print_room(self, args):
@@ -210,9 +213,14 @@ class AmityRun(cmd.Cmd):
 
         puts("Loaded Persons")
         with indent(4):
-            puts(tabulate([[person.id, person.name, person.role,
-                            person.accommodation if person.role == Role.FELLOW else None] for person in loaded_people],
-                          headers=['ID', 'NAME', 'ROLE', 'ACCOMM.'], tablefmt='orgtbl', missingval="----"))
+            puts(
+                tabulate(
+                    [[i + 1, person.id, person.name, person.role,
+                      person.accommodation if person.role == Role.FELLOW else None] for i, person in
+                     enumerate(loaded_people)],
+                    headers=['ID', 'NAME', 'ROLE', 'ACCOMM.'], tablefmt='orgtbl', missingval="----"
+                )
+            )
 
     @docopt_cmd
     def do_save_state(self, args):
