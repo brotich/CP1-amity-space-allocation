@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from mod_amity.models import Staff, Role, Fellow, Office, LivingSpace
+from mod_amity.models import Staff, Constants, Fellow, Office, LivingSpace
 from mod_amity.tests import fake
 
 
@@ -11,7 +11,7 @@ class StaffClassTestCase(TestCase):
     def test_it_create_staff(self):
         staff = Staff(name=self.staff_name, id="ST001")
         self.assertEqual(self.staff_name, staff.name)
-        self.assertEqual(Role.STAFF, staff.get_role())
+        self.assertEqual(Constants.STAFF, staff.get_role())
 
     def test_it_assigns_office(self):
         office = "Narnia"
@@ -32,7 +32,7 @@ class FellowClassTestCase(TestCase):
 
         self.assertListEqual([self.fellow_name1, 'N'], [fellow1.name, fellow1.accommodation])
         self.assertListEqual([self.fellow_name2, 'Y'], [fellow2.name, fellow2.accommodation])
-        self.assertEqual(Role.FELLOW, fellow2.get_role())
+        self.assertEqual(Constants.FELLOW, fellow2.get_role())
 
     def test_it_assigns_office(self):
         fellow = Fellow(name=self.fellow_name1)

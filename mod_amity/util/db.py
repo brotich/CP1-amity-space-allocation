@@ -47,8 +47,8 @@ class StaffDB(Base):
     __tablename__ = 'staff'
     id = Column(Integer, primary_key=True)
     staff_id = Column(String, unique=True)
-    staff_name = String(String)
-    staff_office = String(String)
+    staff_name = Column(String)
+    staff_office = Column(String)
 
     def __init__(self, staff_id, name, office):
         self.staff_id = staff_id
@@ -63,23 +63,31 @@ class DbUtil(object):
         Base.metadata.create_all(engine)
         self.db = Session(bind=engine)
 
-    def save_to_db(self, rooms, fellows, staff):
+    def save_to_db(self, rooms, people):
         """
         write staff, fellows, staff to database
         """
         for room in rooms:
             self.db.add(RoomDB(room.name, room.type), _warn=False)
 
-        for fellow in fellows:
+        for fellow in people['fellows']:
             self.db.add(
                 FellowDB(fellow_id=fellow.id, name=fellow.name, office=fellow.office, living_space=fellow.living_space),
                 _warn=False
             )
 
-        for staff in staff:
+        for staff in people['staff']:
             self.db.add(StaffDB(staff_id=staff.id, name=staff.name, office=staff.office), _warn=False)
 
         self.db.commit()
 
     def load_state(self, db_path):
-        pass
+        """
+        loads the state of db to amity
+        :param db_path:
+        :return:
+        """
+
+        rooms = RoomDB.all()
+
+        print (rooms)

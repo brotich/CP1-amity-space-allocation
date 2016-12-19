@@ -1,5 +1,5 @@
 
-class Role(object):
+class Constants(object):
     STAFF = "Staff"
     FELLOW = "Fellow"
     LIVING_SPACE = "Living Space"
@@ -14,7 +14,7 @@ class Person(object):
 
     def __init__(self, name, id=None):
 
-        if len(name) == 0:
+        if name.strip() == " ":
             raise ValueError("name cannot empty")
 
         self.name = name
@@ -33,7 +33,7 @@ class Staff(Person):
 
     def __init__(self, name, id=None):
         super(self.__class__, self).__init__(name, id=id)
-        self.role = Role.STAFF
+        self.role = Constants.STAFF
 
 
 class Fellow(Person):
@@ -44,7 +44,7 @@ class Fellow(Person):
             raise ValueError("accommodation should be Y or N")
         self.accommodation = accommodation
         self.living_space = None
-        self.role = Role.FELLOW
+        self.role = Constants.FELLOW
 
     def assign_living_space(self, living_space):
         if self.accommodation == 'N':
@@ -79,12 +79,12 @@ class Room(object):
         if self.is_full():
             raise ValueError("Room is full")
         if not isinstance(person, Person):
-            raise TypeError("Rooms assigned to fellow or staff")
+            raise TypeError("Rooms assigned to only fellow or staff")
 
         self.occupants.append(person)
 
     def is_full(self):
-        return len(self.occupants) > self.capacity
+        return not len(self.occupants) < self.capacity
 
 
 class Office(Room):
@@ -93,7 +93,7 @@ class Office(Room):
     """
 
     def __init__(self, name):
-        super(self.__class__, self).__init__(name, 6, Role.OFFICE)
+        super(self.__class__, self).__init__(name, 6, Constants.OFFICE)
 
 
 class LivingSpace(Room):
@@ -103,7 +103,7 @@ class LivingSpace(Room):
     """
 
     def __init__(self, name):
-        super(self.__class__, self).__init__(name, 4, Role.LIVING_SPACE)
+        super(self.__class__, self).__init__(name, 4, Constants.LIVING_SPACE)
 
     def allocate_space(self, person):
 

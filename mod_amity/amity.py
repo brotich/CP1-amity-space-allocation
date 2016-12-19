@@ -3,7 +3,7 @@ from __future__ import print_function
 import os
 import random
 
-from mod_amity.models import Office, LivingSpace, Fellow, Staff, Role
+from mod_amity.models import Office, LivingSpace, Fellow, Staff, Constants
 from mod_amity.util.db import DbUtil
 from mod_amity.util.file import FileUtil as fileStorage
 
@@ -39,11 +39,11 @@ class Amity(object):
         self.living_spaces["total"].append(LivingSpace(name))
         self.check_room_availability()
 
-    def add_person(self, name, role, accommodation):
+    def add_person(self, name, role, accommodation=None):
 
-        if role == Role.STAFF.upper():
+        if role == Constants.STAFF.upper():
             return self.create_staff(name)
-        elif role == Role.FELLOW.upper():
+        elif role == Constants.FELLOW.upper():
             if accommodation:
                 return self.create_fellow(name, accommodation)
             else:
@@ -77,7 +77,7 @@ class Amity(object):
             office.allocate_space(person)
             person.assign_office(office.name)
 
-        if person.role == Role.FELLOW:
+        if person.role == Constants.FELLOW:
             living_space = random.choice(self.living_spaces["available"]) \
                 if len(self.living_spaces["available"]) > 0 else None
             if living_space is not None and person.accommodation == 'Y':
@@ -137,11 +137,11 @@ class Amity(object):
         :param person: an instance of fellow or staff
         :return:
         """
-        if person.role == Role.STAFF:
+        if person.role == Constants.STAFF:
             if person.office is not None:
                 self.allocated_staff.append(person)
 
-        elif person.role == Role.FELLOW:
+        elif person.role == Constants.FELLOW:
             if person.living_space is not None and person.office is not None:
                 self.allocated_fellows.append(person)
 
@@ -178,20 +178,26 @@ class Amity(object):
         person = self.find_person_by_id(person_id)
         new_room = self.get_rooms(room_name)
 
+        if not new_room:
+            raise ValueError("cannot find room named {}".format(room_name))
+
         if not person:
-            raise ValueError("Cannot Find person with id" + person_id)
+            raise ValueError("Cannot Find person with id " + person_id)
 
         if new_room.is_full():
             raise ValueError("{} is full. Cannot relocate person".format(room_name))
 
         old_room = None
 
-        if new_room.type == Role.OFFICE:
+        if new_room.type == Constants.OFFICE:
             old_room = self.get_rooms(person.office)
-        elif new_room.type == Role.LIVING_SPACE:
+        elif new_room.type == Constants.LIVING_SPACE and person.role == Constants.FELLOW:
             old_room = self.get_rooms(person.living_space)
 
         # check new room is same types as new room
+        if not old_room:
+            raise ValueError("{} not currently allocated {} ".format(person.id, new_room.type))
+
         if not old_room.type == new_room.type:
             raise ValueError("can only relocate to rooms of same type")
 
@@ -200,9 +206,9 @@ class Amity(object):
                 old_room.occupants.remove(occupant)
                 new_room.allocate_space(occupant)
 
-                if new_room.type == Role.OFFICE:
+                if new_room.type == Constants.OFFICE:
                     occupant.office = new_room.name
-                elif new_room.type == Role.LIVING_SPACE:
+                elif new_room.type == Constants.LIVING_SPACE:
                     occupant.living_space = new_room.name
                 break
         self.check_room_availability()
@@ -213,6 +219,8 @@ class Amity(object):
         """
         check for state of room occupants and moves rooms to available as needed
         """
+        self.offices["available"] = []
+        self.living_spaces["available"] = []
         for office in self.offices["total"]:
             if not office.is_full():
                 self.offices["available"].append(office)
@@ -228,14 +236,10 @@ class Amity(object):
             name = " {} {}".format(person[0], person[1])
             role = person[2].upper()
 
-            try:
-                accommodation = person[3]  # TODO find source od error of room full
-            except IndexError:
-                accommodation = None
-            try:
-                people.append(self.add_person(name, role, accommodation))
-            except Exception:
-                pass
+            accommodation = person[3] if len(person) > 3 else None
+
+            people.append(self.add_person(name, role, accommodation))
+
         return people
 
     def save_state(self, db_path):
@@ -248,4 +252,4 @@ class Amity(object):
 
         rooms = self.living_spaces["total"] + self.offices["total"]
 
-        db_util.save_to_db(rooms=rooms, fellows=self.fellows, staff=self.staff)
+        db_util.save_to_db(rooms=rooms, people=dict(fellows=self.fellows, staff=self.staff))

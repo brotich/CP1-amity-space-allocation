@@ -28,7 +28,7 @@ from clint.textui import indent, puts
 from tabulate import tabulate
 
 from mod_amity.amity import Amity
-from mod_amity.models import Role
+from mod_amity.models import Constants
 
 
 def docopt_cmd(func):
@@ -83,20 +83,24 @@ class AmityRun(cmd.Cmd):
             print("Invalid: role should STAFF or FELLOW")
             return
 
-        accommodation = args['<wants_accommodation>'] if args['<wants_accommodation>'] else None
+        accommodation = args['<wants_accommodation>'].upper() if args['<wants_accommodation>'] else None
 
-        person = amity.add_person(name, role, accommodation)
+        try:
 
-        print("{} {} created successfully".format(person.role, person.name))
-        if person.office is not None:
-            print("allocated office space at {} ".format(person.office))
-        else:
-            print("No vacant office to allocate")
-        if person.role == Role.FELLOW and person.accommodation == 'Y':
-            if person.living_space is None:
-                print("allocate living space at {} ".format(person.living_space))
+            person = amity.add_person(name, role, accommodation)
+
+            print("{} {} created successfully".format(person.role, person.name))
+            if person.office is not None:
+                print("allocated office space at {} ".format(person.office))
             else:
-                print("No vacant living spaces")
+                print("No vacant office to allocate")
+            if person.role == Constants.FELLOW and person.accommodation == 'Y':
+                if person.living_space is None:
+                    print("allocate living space at {} ".format(person.living_space))
+                else:
+                    print("No vacant living spaces")
+        except Exception as ex:
+            puts("Error: "+ex.message)
 
     @docopt_cmd
     def do_create_room(self, args):
@@ -111,14 +115,18 @@ class AmityRun(cmd.Cmd):
 
         room_names = args['<room_names>']
 
-        if room_type == "LIVING":
-            for room_name in room_names:
-                amity.create_living_space(room_name)
-        elif room_type == "OFFICE":
-            for room_name in room_names:
-                amity.create_office(room_name)
+        try:
 
-        print("Created {} rooms: {}".format(room_type, ", ".join(room_names)))
+            if room_type == "LIVING":
+                for room_name in room_names:
+                    amity.create_living_space(room_name)
+            elif room_type == "OFFICE":
+                for room_name in room_names:
+                    amity.create_office(room_name)
+
+            print("Created {} rooms: {}".format(room_type, ", ".join(room_names)))
+        except Exception as ex:
+            puts("Error: " + ex.message)
 
     @docopt_cmd
     def do_reallocate_person(self, args):
@@ -128,39 +136,45 @@ class AmityRun(cmd.Cmd):
         person_id = args['<person_id>'].upper()
         new_room_name = args['<new_room_name>']
 
-        relocate_data = amity.relocate_person(person_id, new_room_name)
+        try:
 
-        print("{} relocated from {} to {}".format(relocate_data['person'], relocate_data['old_room'],
-                                                  relocate_data['new_room']))
+            relocate_data = amity.relocate_person(person_id, new_room_name)
+
+            print("{} relocated from {} to {}".format(relocate_data['person'], relocate_data['old_room'],
+                                                      relocate_data['new_room']))
+        except Exception as ex:
+            puts("Error: " + ex.message)
 
     @docopt_cmd
     def do_print_unallocated(self, args):
         """
             Usage: print_unallocated
         """
+        try:
+            unallocated = amity.get_unallocated_persons()
 
-        unallocated = amity.get_unallocated_persons()
-
-        puts("Unallocated Persons")
-        with indent(4):
-            puts("1. Staff")
+            puts("Unallocated Persons")
             with indent(4):
-                if unallocated["staff"]:
-                    puts(tabulate([[i + 1, staff.id, staff.name] for i, staff in enumerate(unallocated["staff"])],
-                                  headers=['ID', 'NAME'], tablefmt='orgtbl', missingval="---"))
-                else:
-                    puts("All Staff Allocated")
+                puts("1. Staff")
+                with indent(4):
+                    if unallocated["staff"]:
+                        puts(tabulate([[i + 1, staff.id, staff.name] for i, staff in enumerate(unallocated["staff"])],
+                                      headers=['ID', 'NAME'], tablefmt='orgtbl', missingval="---"))
+                    else:
+                        puts("All Staff Allocated")
 
-        with indent(4):
-            puts("2. Fellows")
             with indent(4):
-                if unallocated["fellows"]:
-                    puts(tabulate([[i + 1, fellow.id, fellow.name, fellow.office, fellow.living_space] for i, fellow in
-                                   enumerate(unallocated["fellows"])],
-                                  headers=['ID', 'NAME', 'OFFICE', 'LIVING SPACE'], tablefmt='orgtbl',
-                                  missingval="---"))
-                else:
-                    puts("All Fellows Allocated")
+                puts("2. Fellows")
+                with indent(4):
+                    if unallocated["fellows"]:
+                        puts(tabulate([[i + 1, fellow.id, fellow.name, fellow.office, fellow.living_space] for i, fellow in
+                                       enumerate(unallocated["fellows"])],
+                                      headers=['ID', 'NAME', 'OFFICE', 'LIVING SPACE'], tablefmt='orgtbl',
+                                      missingval="---"))
+                    else:
+                        puts("All Fellows Allocated")
+        except Exception as ex:
+            puts("Error: " + ex.message)
 
     @docopt_cmd
     def do_print_room(self, args):
@@ -168,40 +182,47 @@ class AmityRun(cmd.Cmd):
             Usage: print_room <room_name>
         """
         room_name = args["<room_name>"]
-        room = amity.get_rooms(room_name)
 
-        with indent(4):
-            puts("Room: {}({})".format(room.name.upper(), room.type))
-            with indent(2):
-                puts("Occupants: ")
-                occupants = [[i + 1, occupant.id, occupant.name, occupant.role] for i, occupant in
-                             enumerate(room.occupants)]
-                puts(tabulate(occupants,
-                              headers=['ID', 'NAME', 'ROLE'], tablefmt='orgtbl', missingval="---"))
+        try:
+            room = amity.get_rooms(room_name)
+
+            with indent(4):
+                puts("Room: {}({})".format(room.name.upper(), room.type))
+                with indent(2):
+                    puts("Occupants: ")
+                    occupants = [[i + 1, occupant.id, occupant.name, occupant.role] for i, occupant in
+                                 enumerate(room.occupants)]
+                    puts(tabulate(occupants,
+                                  headers=['ID', 'NAME', 'ROLE'], tablefmt='orgtbl', missingval="---"))
+        except Exception as ex:
+            puts("Error: " + ex.message)
 
     @docopt_cmd
     def do_print_allocations(self, args):
         """Usage: print_allocations
         """
-        rooms = amity.get_rooms()
+        try:
+            rooms = amity.get_rooms()
 
-        puts("Offices")
-        with indent(4):
-            for office in rooms['offices']:
-                puts(office.name)
-                with indent(4):
-                    occupants = [[occupant.id, occupant.name, occupant.role] for occupant in office.occupants]
-                    puts(tabulate(occupants,
-                                  headers=['ID', 'NAME', 'ROLE'], tablefmt='orgtbl', missingval="---"))
+            puts("Offices")
+            with indent(4):
+                for office in rooms['offices']:
+                    puts(office.name)
+                    with indent(4):
+                        occupants = [[occupant.id, occupant.name, occupant.role] for occupant in office.occupants]
+                        puts(tabulate(occupants,
+                                      headers=['ID', 'NAME', 'ROLE'], tablefmt='orgtbl', missingval="---"))
 
-        puts("Living Spaces")
-        with indent(4):
-            for living_space in rooms['living_spaces']:
-                puts(living_space.name)
-                with indent(4):
-                    occupants = [[occupant.id, occupant.name, occupant.role] for occupant in living_space.occupants]
-                    puts(tabulate(occupants,
-                                  headers=['ID', 'NAME', 'ROLE'], tablefmt='orgtbl', missingval="---"))
+            puts("Living Spaces")
+            with indent(4):
+                for living_space in rooms['living_spaces']:
+                    puts(living_space.name)
+                    with indent(4):
+                        occupants = [[occupant.id, occupant.name, occupant.role] for occupant in living_space.occupants]
+                        puts(tabulate(occupants,
+                                      headers=['ID', 'NAME', 'ROLE'], tablefmt='orgtbl', missingval="---"))
+        except Exception as ex:
+            puts("Error: " + ex.message)
 
     @docopt_cmd
     def do_load_people(self, args):
@@ -209,18 +230,22 @@ class AmityRun(cmd.Cmd):
         Usage: load_people <file_name>
         """
         file_name = args['<file_name>']
-        loaded_people = amity.load_people(os.path.dirname(os.path.realpath(__file__)) + "/" + file_name)
 
-        puts("Loaded Persons")
-        with indent(4):
-            puts(
-                tabulate(
-                    [[i + 1, person.id, person.name, person.role,
-                      person.accommodation if person.role == Role.FELLOW else None] for i, person in
-                     enumerate(loaded_people)],
-                    headers=['ID', 'NAME', 'ROLE', 'ACCOMM.'], tablefmt='orgtbl', missingval="----"
+        try:
+            loaded_people = amity.load_people(os.path.dirname(os.path.realpath(__file__)) + "/" + file_name)
+
+            puts("Loaded Persons")
+            with indent(4):
+                puts(
+                    tabulate(
+                        [[i + 1, person.id, person.name, person.role,
+                          person.accommodation if person.role == Constants.FELLOW else None] for i, person in
+                         enumerate(loaded_people)],
+                        headers=['ID', 'NAME', 'ROLE', 'ACCOMM.'], tablefmt='orgtbl', missingval="----"
+                    )
                 )
-            )
+        except Exception as ex:
+            puts("Error: " + ex.message)
 
     @docopt_cmd
     def do_save_state(self, args):
@@ -230,8 +255,12 @@ class AmityRun(cmd.Cmd):
         db_name = "amity.sqlite"
         if args['--db']:
             db_name = args['--db']
-        db_path = os.path.dirname(os.path.realpath(__file__)) + "/" + db_name
-        amity.save_state(db_path)
+
+        try:
+            db_path = os.path.dirname(os.path.realpath(__file__)) + "/" + db_name
+            amity.save_state(db_path)
+        except Exception as ex:
+            puts("Error: " + ex.message)
 
     def do_clear(self, arg):
         """Clears screen>"""
