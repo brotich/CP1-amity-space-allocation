@@ -181,10 +181,20 @@ class AmityRun(cmd.Cmd):
         """Usage: print_allocations
         """
         rooms = amity.get_rooms()
+
+        puts("Offices")
+        with indent(4):
+            for office in rooms['offices']:
+                puts(office.name)
+                with indent(4):
+                    occupants = [[occupant.id, occupant.name, occupant.role] for occupant in office.occupants]
+                    puts(tabulate(occupants,
+                                  headers=['ID', 'NAME', 'ROLE'], tablefmt='orgtbl', missingval="---"))
+
         puts("Living Spaces")
         with indent(4):
             for living_space in rooms['living_spaces']:
-                puts(living_space.name.upper())
+                puts(living_space.name)
                 with indent(4):
                     occupants = [[occupant.id, occupant.name, occupant.role] for occupant in living_space.occupants]
                     puts(tabulate(occupants,

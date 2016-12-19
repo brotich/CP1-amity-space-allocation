@@ -246,7 +246,6 @@ class Amity(object):
 
         db_util = DbUtil(db_path)
 
-        rooms = self.living_spaces["unavailable"] + self.living_spaces["available"] + self.offices["unavailable"] + \
-                self.offices["available"]
+        rooms = self.living_spaces["total"] + self.offices["total"]
 
         db_util.save_to_db(rooms=rooms, fellows=self.fellows, staff=self.staff)
