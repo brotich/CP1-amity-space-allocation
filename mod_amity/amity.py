@@ -17,12 +17,12 @@ class Amity(object):
     """
 
     def __init__(self):
-        self.living_spaces = dict(available=[], total=[])
-        self.offices = dict(available=[], total=[])
+        self.living_spaces = {'available': [], 'total': []}
+        self.offices = {'available': [], 'total': []}
 
         self.fellows = []
         self.staff = []
-        self.ids = dict(fellow=[0], staff=[0])
+        self.ids = {'fellow': [0], 'staff': [0]}
 
         self.allocated_staff = []
         self.allocated_fellows = []
@@ -57,7 +57,7 @@ class Amity(object):
         return fellow
 
     def create_staff(self, name):
-        staff = Staff(name, id=self.get_staff_id())
+        staff = Staff(name, id=self.generate_staff_id())
         self.staff.append(staff)
         self.allocate_person(staff)
 
@@ -77,7 +77,7 @@ class Amity(object):
             office.allocate_space(person)
             person.assign_office(office.name)
 
-        if person.role == Constants.FELLOW:
+        if person.role is Constants.FELLOW:
             if person.accommodation == 'Y':
                 living_space = random.choice(self.living_spaces["available"]) \
                     if len(self.living_spaces["available"]) > 0 else None
@@ -95,8 +95,8 @@ class Amity(object):
         gets persons not fully allocated spaces
         :return: dict with  fellows and staff
         """
-        return dict(staff=list(set(self.staff) - set(self.allocated_staff)),
-                    fellows=list(set(self.fellows) - set(self.allocated_fellows)))
+        return {'staff': list(set(self.staff).symmetric_difference(set(self.allocated_staff))),
+                'fellows': list(set(self.fellows).symmetric_difference(set(self.allocated_fellows)))}
 
     def get_rooms(self, room_name=None):
         """
@@ -112,9 +112,9 @@ class Amity(object):
                 if room.name == room_name:
                     return room
         else:
-            return dict(living_spaces=living_spaces, offices=offices)
+            return {'living_spaces': living_spaces, 'offices': offices}
 
-    def get_staff_id(self):
+    def generate_staff_id(self):
         """
         generate unique ids for staff
         :return: staff id i.e ST001
@@ -217,7 +217,7 @@ class Amity(object):
                 break
         self.check_room_availability()
 
-        return dict(person=person.id, new_room=new_room.name, old_room=old_room.name)
+        return {'person': person.id, 'new_room': new_room.name, 'old_room': old_room.name}
 
     def check_room_availability(self):
         """
@@ -256,7 +256,7 @@ class Amity(object):
 
         rooms = self.living_spaces["total"] + self.offices["total"]
 
-        return db_util.save_to_db(rooms=rooms, people=dict(fellows=self.fellows, staff=self.staff))
+        return db_util.save_to_db(rooms=rooms, people={'fellows': self.fellows, 'staff': self.staff})
 
     def load_state(self, db_path):
 

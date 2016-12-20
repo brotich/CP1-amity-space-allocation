@@ -143,7 +143,7 @@ class DbUtil(object):
                 if fellow.living_space in living_spaces:
                     living_spaces[fellow.living_space].allocate_space(fellow)
 
-        max_ids = dict(fellow=[int(max_fellow_id[2:])], staff=[int(max_staff_id[2:])])
+        max_ids = {'(fellow': [int(max_fellow_id[2:])], 'staff': [int(max_staff_id[2:])]}
 
-        return dict(fellows=fellows_list, staff=staff_list, offices=offices.values(),
-                    living_spaces=living_spaces.values(), current_ids=max_ids)
+        return {'fellows': fellows_list, 'staff': staff_list, 'offices': offices.values(),
+                'living_spaces': living_spaces.values(), 'current_ids': max_ids}

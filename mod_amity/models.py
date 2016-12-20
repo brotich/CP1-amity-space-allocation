@@ -17,10 +17,8 @@ class Person(object):
         if name.strip() == " ":
             raise ValueError("name cannot empty")
 
-        self.name = name
-        self.office = None
-        self.role = None
-        self.id = id
+        self.name, self.id = name, id
+        self.office, self.role = None, None
 
     def assign_office(self, office_name):
         self.office = office_name
