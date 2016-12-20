@@ -2,11 +2,8 @@ from __future__ import print_function, unicode_literals
 
 from sqlalchemy import Column, String, Integer
 from sqlalchemy import create_engine
-from sqlalchemy import func
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
-from sqlalchemy_utils import ChoiceType
 
 from mod_amity.models import Constants, LivingSpace, Office, Staff, Fellow
 

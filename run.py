@@ -18,13 +18,13 @@ Options:
 """
 
 from __future__ import print_function, unicode_literals
-from docopt import docopt, DocoptExit
-import sys
-import os
+
 import cmd
+import os
+import sys
 
 from clint.textui import indent, puts
-
+from docopt import docopt, DocoptExit
 from tabulate import tabulate
 
 from mod_amity.amity import Amity
