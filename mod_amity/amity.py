@@ -232,7 +232,7 @@ class Amity(object):
             if not living_space.is_full():
                 self.living_spaces["available"].append(living_space)
 
-    def load_people(self, file_name):
+    def load_people(self):
 
         people = []
 

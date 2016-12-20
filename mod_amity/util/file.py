@@ -3,7 +3,6 @@ import os
 
 
 class FileUtil(object):
-
     @staticmethod
     def read_from_file(file_name):
         people_data = []
@@ -20,7 +19,14 @@ class FileUtil(object):
         return people_data
 
     @staticmethod
-    def write_to_file(file_name, data):
+    def write_to_file(file_path, data):
 
-        with open(file_name, mode='rw') as file_handle:
-            file_handle.writelines(data)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        with open(file_path, mode='w') as file_handle:
+            for line in data:
+                file_handle.write(line + "\n")
+            file_handle.flush()
+
+        return True

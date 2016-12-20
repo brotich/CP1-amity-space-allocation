@@ -29,6 +29,7 @@ from tabulate import tabulate
 
 from mod_amity.amity import Amity
 from mod_amity.models import Constants
+from mod_amity.util.file import FileUtil
 
 
 def docopt_cmd(func):
@@ -100,7 +101,7 @@ class AmityRun(cmd.Cmd):
                 else:
                     print("No vacant living spaces")
         except Exception as ex:
-            puts("Error: "+ex.message)
+            puts("Error: " + ex.message)
 
     @docopt_cmd
     def do_create_room(self, args):
@@ -148,9 +149,10 @@ class AmityRun(cmd.Cmd):
     @docopt_cmd
     def do_print_unallocated(self, args):
         """
-            Usage: print_unallocated
+        Usage: print_unallocated [<file_name>]
         """
         try:
+
             unallocated = amity.get_unallocated_persons()
 
             puts("Unallocated Persons")
@@ -158,8 +160,10 @@ class AmityRun(cmd.Cmd):
                 puts("1. Staff")
                 with indent(4):
                     if unallocated["staff"]:
-                        puts(tabulate([[i + 1, staff.id, staff.name] for i, staff in enumerate(unallocated["staff"])],
-                                      headers=['ID', 'NAME'], tablefmt='orgtbl', missingval="---"))
+                        puts(tabulate(
+                            [[i + 1, staff.id, staff.name] for i, staff in enumerate(unallocated["staff"])],
+                            headers=['ID', 'NAME'], tablefmt='orgtbl', missingval="---")
+                        )
                     else:
                         puts("All Staff Allocated")
 
@@ -167,12 +171,27 @@ class AmityRun(cmd.Cmd):
                 puts("2. Fellows")
                 with indent(4):
                     if unallocated["fellows"]:
-                        puts(tabulate([[i + 1, fellow.id, fellow.name, fellow.office, fellow.living_space] for i, fellow in
-                                       enumerate(unallocated["fellows"])],
-                                      headers=['ID', 'NAME', 'OFFICE', 'LIVING SPACE'], tablefmt='orgtbl',
-                                      missingval="---"))
+                        puts(tabulate(
+                            [[i + 1, fellow.id, fellow.name, fellow.office, fellow.living_space] for i, fellow in
+                             enumerate(unallocated["fellows"])],
+                            headers=['ID', 'NAME', 'OFFICE', 'LIVING SPACE'], tablefmt='orgtbl',
+                            missingval="---"))
                     else:
                         puts("All Fellows Allocated")
+
+            file_name = args['<file_name>'] if args['<file_name>'] else None
+
+            if file_name:
+                output_data = []
+                for person_type, person_list in unallocated.items():
+                    output_data.append(person_type.upper())
+                    output_data.append("-"*75)
+                    for person in person_list:
+                        output_data.append(person.name.title())
+                file_path = os.path.dirname(os.path.realpath(__file__)) + "/" + file_name
+
+                if FileUtil.write_to_file(file_path, output_data):
+                    print ("Succesfully wrote data to {}".format(file_path))
         except Exception as ex:
             puts("Error: " + ex.message)
 
@@ -199,7 +218,7 @@ class AmityRun(cmd.Cmd):
 
     @docopt_cmd
     def do_print_allocations(self, args):
-        """Usage: print_allocations
+        """Usage: print_allocations [-o=filename]
         """
         try:
             rooms = amity.get_rooms()
@@ -275,11 +294,11 @@ class AmityRun(cmd.Cmd):
         try:
             db_path = os.path.dirname(os.path.realpath(__file__)) + "/" + db_name
             if amity.load_state(db_path):
-                print ("Successfully loaded state from {}".format(db_name))
+                print("Successfully loaded state from {}".format(db_name))
             else:
                 raise Exception("Failed to load data from {}".format(db_name))
         except Exception as ex:
-            print (ex.message)
+            print(ex.message)
 
     def do_clear(self, arg):
         """Clears screen>"""
