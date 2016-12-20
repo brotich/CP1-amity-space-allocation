@@ -1,14 +1,13 @@
-
 from __future__ import print_function, unicode_literals
-from sqlalchemy import Column, DateTime, String, Integer, ForeignKey, func
+
+from sqlalchemy import Column, String, Integer
 from sqlalchemy import Unicode
-from sqlalchemy.orm import Session
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import Session
 from sqlalchemy_utils import ChoiceType
 
+from mod_amity.models import Constants, LivingSpace, Office
 
 Base = declarative_base()
 
@@ -16,12 +15,9 @@ Base = declarative_base()
 class RoomDB(Base):
     __tablename__ = 'rooms'
 
-    TYPES = [("living_space", "Living Space"),
-             ("office", "Office")]
-
     id = Column(Integer, primary_key=True)
-    name = Column(Unicode, unique=True)
-    type = Column(ChoiceType(TYPES))
+    name = Column(String, unique=True)
+    type = Column(String)
 
     def __init__(self, name, room_type):
         self.name = name
@@ -81,13 +77,19 @@ class DbUtil(object):
 
         self.db.commit()
 
-    def load_state(self, db_path):
+    def load_state(self):
         """
         loads the state of db to amity
-        :param db_path:
         :return:
         """
+        rooms = dict(offices=[], living_space=[])
+        fellows = []
 
-        rooms = RoomDB.all()
+        rooms_db = self.db.query(RoomDB.name, RoomDB.type).all()
 
-        print (rooms)
+        for room in rooms_db:
+            if room.type == Constants.LIVING_SPACE:
+                rooms['living_space'].append(LivingSpace(room.name))
+            elif room.type == Constants.OFFICE:
+                rooms['offices'].append(Office(room.name))
+

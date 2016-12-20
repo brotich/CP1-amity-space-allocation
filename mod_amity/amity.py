@@ -73,16 +73,17 @@ class Amity(object):
         """
         office = random.choice(self.offices["available"]) if len(self.offices["available"]) > 0 else None
 
-        if office is not None:
+        if office:
             office.allocate_space(person)
             person.assign_office(office.name)
 
         if person.role == Constants.FELLOW:
-            living_space = random.choice(self.living_spaces["available"]) \
-                if len(self.living_spaces["available"]) > 0 else None
-            if living_space is not None and person.accommodation == 'Y':
-                living_space.allocate_space(person)
-                person.assign_living_space(living_space.name)
+            if person.accommodation == 'Y':
+                living_space = random.choice(self.living_spaces["available"]) \
+                    if len(self.living_spaces["available"]) > 0 else None
+                if living_space:
+                    living_space.allocate_space(person)
+                    person.assign_living_space(living_space.name)
 
         self.check_person_allocation(person)
         self.check_room_availability()
@@ -253,3 +254,12 @@ class Amity(object):
         rooms = self.living_spaces["total"] + self.offices["total"]
 
         db_util.save_to_db(rooms=rooms, people=dict(fellows=self.fellows, staff=self.staff))
+
+    def load_state(self, db_path):
+
+        if not os.path.exists(db_path):
+            raise ValueError("cannot open db at {} ".format(db_path))
+
+        db_util = DbUtil(db_path)
+
+        db_util.load_state()

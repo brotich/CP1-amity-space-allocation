@@ -262,6 +262,21 @@ class AmityRun(cmd.Cmd):
         except Exception as ex:
             puts("Error: " + ex.message)
 
+    @docopt_cmd
+    def do_load_state(self, args):
+        """
+            Usage: load_state [--db=sqlite_database]
+        """
+        db_name = "amity.sqlite"
+        if args['--db']:
+            db_name = args['--db']
+
+        try:
+            db_path = os.path.dirname(os.path.realpath(__file__)) + "/" + db_name
+            amity.load_state(db_path)
+        except Exception as ex:
+            print (str(ex))
+
     def do_clear(self, arg):
         """Clears screen>"""
 
