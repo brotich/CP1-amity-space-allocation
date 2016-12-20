@@ -188,6 +188,9 @@ class Amity(object):
         if new_room.is_full():
             raise ValueError("{} is full. Cannot relocate person".format(room_name))
 
+        if new_room.type == Constants.LIVING_SPACE and person.role == Constants.STAFF:
+            raise  ValueError("Cannot relocate staff member to Living Space")
+
         old_room = None
 
         if new_room.type == Constants.OFFICE:
@@ -253,7 +256,7 @@ class Amity(object):
 
         rooms = self.living_spaces["total"] + self.offices["total"]
 
-        db_util.save_to_db(rooms=rooms, people=dict(fellows=self.fellows, staff=self.staff))
+        return db_util.save_to_db(rooms=rooms, people=dict(fellows=self.fellows, staff=self.staff))
 
     def load_state(self, db_path):
 
@@ -262,4 +265,22 @@ class Amity(object):
 
         db_util = DbUtil(db_path)
 
-        db_util.load_state()
+        save_state = db_util.load_state()
+
+        if save_state:
+
+            self.ids = save_state['current_ids']
+            self.living_spaces['total'] = save_state['living_spaces']
+            self.offices['total'] = save_state['offices']
+
+            self.fellows = save_state['fellows']
+            self.staff = save_state['staff']
+
+            for person in (self.fellows + self.staff):
+                self.check_person_allocation(person)
+
+            self.check_room_availability()
+
+            return True
+
+        return False

@@ -31,19 +31,21 @@ class Person(object):
 
 class Staff(Person):
 
-    def __init__(self, name, id=None):
+    def __init__(self, name, id=None, office=None):
         super(self.__class__, self).__init__(name, id=id)
         self.role = Constants.STAFF
+        self.office = office
 
 
 class Fellow(Person):
 
-    def __init__(self, name, accommodation='N', id=None):
+    def __init__(self, name, accommodation='N', id=None, living_space=None, office=None):
         super(self.__class__, self).__init__(name, id=id)
         if accommodation not in ['N', 'Y']:
             raise ValueError("accommodation should be Y or N")
         self.accommodation = accommodation
-        self.living_space = None
+        self.living_space = living_space
+        self.office = office
         self.role = Constants.FELLOW
 
     def assign_living_space(self, living_space):

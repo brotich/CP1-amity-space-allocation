@@ -2,9 +2,9 @@
 
 """
 Usage:
-    amity create_room <room_name>...
-    amity add_person <first_name> <last_name> (Fellow|Staff) [<wants_accomodation>]
-    amity reallocate_person <person_name> <new_room_name>
+    amity create_room (living|office) <room_name>...
+    amity add_person <first_name> <last_name> (fellow|staff) [<wants_accomodation>]
+    amity reallocate_person <person_id> <new_room_name>
     amity load_people <filename>
     amity print_allocations [-o <filename>]
     amity print_unallocated [-o <filename>]
@@ -258,7 +258,8 @@ class AmityRun(cmd.Cmd):
 
         try:
             db_path = os.path.dirname(os.path.realpath(__file__)) + "/" + db_name
-            amity.save_state(db_path)
+            if amity.save_state(db_path):
+                puts("Successfully saved state to file {}".format(db_name))
         except Exception as ex:
             puts("Error: " + ex.message)
 
@@ -273,9 +274,12 @@ class AmityRun(cmd.Cmd):
 
         try:
             db_path = os.path.dirname(os.path.realpath(__file__)) + "/" + db_name
-            amity.load_state(db_path)
+            if amity.load_state(db_path):
+                print ("Successfully loaded state from {}".format(db_name))
+            else:
+                raise Exception("Failed to load data from {}".format(db_name))
         except Exception as ex:
-            print (str(ex))
+            print (ex.message)
 
     def do_clear(self, arg):
         """Clears screen>"""
