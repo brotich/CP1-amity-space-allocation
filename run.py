@@ -191,7 +191,7 @@ class AmityRun(cmd.Cmd):
                 file_path = os.path.dirname(os.path.realpath(__file__)) + "/" + file_name
 
                 if FileUtil.write_to_file(file_path, output_data):
-                    print ("Succesfully wrote data to {}".format(file_path))
+                    print ("Successfully wrote data to {}".format(file_path))
         except Exception as ex:
             puts("Error: " + ex.message)
 
@@ -218,7 +218,7 @@ class AmityRun(cmd.Cmd):
 
     @docopt_cmd
     def do_print_allocations(self, args):
-        """Usage: print_allocations [-o=filename]
+        """Usage: print_allocations [<file_name>]
         """
         try:
             rooms = amity.get_rooms()
@@ -240,6 +240,25 @@ class AmityRun(cmd.Cmd):
                         occupants = [[occupant.id, occupant.name, occupant.role] for occupant in living_space.occupants]
                         puts(tabulate(occupants,
                                       headers=['ID', 'NAME', 'ROLE'], tablefmt='orgtbl', missingval="---"))
+
+            # write data to file
+            file_name = args['<file_name>'] if args['<file_name>'] else None
+
+            if file_name:
+                output_data = []
+
+                for room in (rooms['offices']+rooms['living_spaces']):
+                    if room.occupants:
+                        output_data.append(room.name.upper())
+                        output_data.append("-" * 75)
+
+                        output_data.append(", ".join([person.name.upper() for person in room.occupants]))
+                        output_data.append("\n")
+
+                file_path = os.path.dirname(os.path.realpath(__file__)) + "/" + file_name
+
+                if FileUtil.write_to_file(file_path, output_data):
+                        print("Successfully wrote data to {}".format(file_path))
         except Exception as ex:
             puts("Error: " + ex.message)
 
