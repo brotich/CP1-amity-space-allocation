@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from mod_amity.models import Staff, Role, Fellow, Office, LivingSpace
+from mod_amity.models import Staff, Constants, Fellow, Office, LivingSpace
 from mod_amity.tests import fake
 
 
@@ -9,13 +9,13 @@ class StaffClassTestCase(TestCase):
         self.staff_name = fake.first_name() + " " + fake.last_name()
 
     def test_it_create_staff(self):
-        staff = Staff(self.staff_name)
+        staff = Staff(name=self.staff_name, id="ST001")
         self.assertEqual(self.staff_name, staff.name)
-        self.assertEqual(Role.STAFF, staff.get_role())
+        self.assertEqual(Constants.STAFF, staff.get_role())
 
     def test_it_assigns_office(self):
         office = "Narnia"
-        staff = Staff(self.staff_name)
+        staff = Staff(name=self.staff_name, id="ST001")
         staff.assign_office(office)
 
         self.assertEqual(office, staff.office)
@@ -27,15 +27,15 @@ class FellowClassTestCase(TestCase):
         self.fellow_name2 = fake.first_name() + " " + fake.last_name()
 
     def test_it_create_fellow(self):
-        fellow1 = Fellow(self.fellow_name1)
-        fellow2 = Fellow(self.fellow_name2, accommodation='Y')
+        fellow1 = Fellow(name=self.fellow_name1, id="FL001")
+        fellow2 = Fellow(name=self.fellow_name2, id="FL002", accommodation='Y')
 
         self.assertListEqual([self.fellow_name1, 'N'], [fellow1.name, fellow1.accommodation])
         self.assertListEqual([self.fellow_name2, 'Y'], [fellow2.name, fellow2.accommodation])
-        self.assertEqual(Role.FELLOW, fellow2.get_role())
+        self.assertEqual(Constants.FELLOW, fellow2.get_role())
 
     def test_it_assigns_office(self):
-        fellow = Fellow(self.fellow_name1)
+        fellow = Fellow(name=self.fellow_name1)
         office = "Narnia"
 
         fellow.assign_office(office)
@@ -43,8 +43,8 @@ class FellowClassTestCase(TestCase):
         self.assertEqual(office, fellow.office)
 
     def test_it_assigns_living_space(self):
-        fellow1 = Fellow(self.fellow_name1, accommodation='Y')
-        fellow2 = Fellow(self.fellow_name2)
+        fellow1 = Fellow(name=self.fellow_name1, id="FL001", accommodation='Y')
+        fellow2 = Fellow(name=self.fellow_name2, id="FL001")
 
         living_space = "Shell"
 
@@ -60,15 +60,15 @@ class OfficeClassTestCase(TestCase):
 
     def setUp(self):
         self.office_name = "Hogwarts"
-        self.staff = [Staff(fake.first_name() + " " + fake.last_name())] * 2
-        self.fellow = [Fellow(fake.first_name() + " " + fake.last_name())] * 7
+        self.staff = [Staff(name=fake.first_name() + " " + fake.last_name())] * 2
+        self.fellow = [Fellow(name=fake.first_name() + " " + fake.last_name())] * 7
         self.people = self.fellow + self.staff
 
     def test_it_create_new_room_instance(self):
         office = Office(self.office_name)
 
         self.assertEqual(self.office_name, office.name)
-        self.assertEqual(6, office.get_capacity())
+        self.assertEqual(6, office.capacity)
         self.assertRaises(TypeError, Office, 123)
         self.assertRaises(ValueError, Office, "")
 
@@ -79,7 +79,7 @@ class OfficeClassTestCase(TestCase):
 
         self.assertListEqual(self.staff, office.occupants)
 
-    def test_it_assigns_fellow(self):
+    def test_it_assigns_fellows(self):
         office3 = Office(self.office_name)
         for fellow in self.fellow[:4]:
             office3.allocate_space(fellow)
@@ -100,8 +100,8 @@ class LivingSpaceTestCase(TestCase):
 
     def setUp(self):
         self.living_space_name = "Shell"
-        self.staff = Staff(fake.first_name() + " " + fake.last_name())
-        self.fellows = [Fellow(fake.first_name() + " " + fake.last_name())] * 7
+        self.staff = Staff(name=fake.first_name() + " " + fake.last_name())
+        self.fellows = [Fellow(name=fake.first_name() + " " + fake.last_name())] * 7
 
     def test_it_creates_new_living_space_instance(self):
         living_space = LivingSpace(self.living_space_name)

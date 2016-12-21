@@ -1,25 +1,27 @@
 
-class Role(object):
-    STAFF = 0
-    FELLOW = 1
+class Constants(object):
+    STAFF = "Staff"
+    FELLOW = "Fellow"
+    LIVING_SPACE = "Living Space"
+    OFFICE = "Office"
 
 
 class Person(object):
+    """
+    Boiler-plate class for creating a person instance.
+    Its inherited to form Fellows and Staff subclasses
+    """
 
-    def __init__(self, name):
+    def __init__(self, name, id=None):
 
-        if isinstance(name, str):
-            raise TypeError("name should be string")
-
-        if len(name) == 0:
+        if name.strip() == " ":
             raise ValueError("name cannot empty")
 
-        self.name = name
-        self.office = None
-        self.role = None
+        self.name, self.id = name, id
+        self.office, self.role = None, None
 
-    def assign_office(self, office):
-        self.office = office
+    def assign_office(self, office_name):
+        self.office = office_name
 
     def get_role(self):
         return self.role
@@ -27,18 +29,22 @@ class Person(object):
 
 class Staff(Person):
 
-    def __init__(self, name):
-        super(self.__class__, self).__init__(name)
-        self.role = Role.STAFF
+    def __init__(self, name, id=None, office=None):
+        super(self.__class__, self).__init__(name, id=id)
+        self.role = Constants.STAFF
+        self.office = office
 
 
 class Fellow(Person):
 
-    def __init__(self, name, accommodation='N'):
-        super(self.__class__, self).__init__(name)
+    def __init__(self, name, accommodation='N', id=None, living_space=None, office=None):
+        super(self.__class__, self).__init__(name, id=id)
+        if accommodation not in ['N', 'Y']:
+            raise ValueError("accommodation should be Y or N")
         self.accommodation = accommodation
-        self.living_space = None
-        self.role = Role.FELLOW
+        self.living_space = living_space
+        self.office = office
+        self.role = Constants.FELLOW
 
     def assign_living_space(self, living_space):
         if self.accommodation == 'N':
@@ -48,7 +54,17 @@ class Fellow(Person):
 
 class Room(object):
 
-    def __init__(self, name,  capacity=None):
+    """
+    Boiler plat class for the rooms available in amity.
+    It defines the occupants of a room and the capacity of the room
+    """
+
+    name = None
+    occupants = []
+    capacity = None
+
+    def __init__(self, name,  capacity=None, room_type=None):
+        self.room_type = room_type
         if not isinstance(name, str):
             raise TypeError("string expected")
         if len(name) == 0:
@@ -57,29 +73,43 @@ class Room(object):
         self.name = name
         self.occupants = []
         self.capacity = capacity
+        self.type = room_type
 
     def allocate_space(self, person):
-        if not len(self.occupants) < self.capacity:
+        if self.is_full():
             raise ValueError("Room is full")
         if not isinstance(person, Person):
-            raise TypeError("office assigned to fellow or staff")
+            raise TypeError("Rooms assigned to only fellow or staff")
 
         self.occupants.append(person)
 
-    def get_capacity(self):
-        return self.capacity
+    def is_full(self):
+        return not len(self.occupants) < self.capacity
 
 
 class Office(Room):
+    """
+    Office capacity limited to 6 occupants.
+    """
 
     def __init__(self, name):
-        super(self.__class__, self).__init__(name, 6)
+        super(self.__class__, self).__init__(name, 6, Constants.OFFICE)
 
 
 class LivingSpace(Room):
+    """
+    Living space to 4 occupants.
+    Constraints: can only be assigned to fellows that requested accommodation
+    """
 
     def __init__(self, name):
-        super(self.__class__, self).__init__(name, 4)
+        super(self.__class__, self).__init__(name, 4, Constants.LIVING_SPACE)
+
+    def allocate_space(self, person):
+
+        if not isinstance(person, Fellow):
+            raise TypeError("Staff cannot be allocate Living Space")
+        super(self.__class__, self).allocate_space(person)
 
 
 
