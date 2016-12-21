@@ -91,13 +91,13 @@ class AmityRun(cmd.Cmd):
             person = amity.add_person(name, role, accommodation)
 
             print("{} {} created successfully".format(person.role, person.name))
-            if person.office is not None:
+            if person.office:
                 print("allocated office space at {} ".format(person.office))
             else:
                 print("No vacant office to allocate")
             if person.role == Constants.FELLOW and person.accommodation == 'Y':
-                if person.living_space is None:
-                    print("allocate living space at {} ".format(person.living_space))
+                if person.living_space:
+                    print("allocated living space at {} ".format(person.living_space))
                 else:
                     print("No vacant living spaces")
         except Exception as ex:
