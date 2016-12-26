@@ -68,8 +68,23 @@ amity = Amity()
 
 
 class AmityRun(cmd.Cmd):
-    intro = 'Welcome to Amity' \
-            + ' (type help for a list of commands.)'
+    intro = """
+    Welcome to Amity
+      (type help for a list of commands.)
+      Usage:
+            amity create_room (living|office) <room_name>...
+            amity add_person <first_name> <last_name> (fellow|staff) [<wants_accomodation>]
+            amity reallocate_person <person_id> <new_room_name>
+            amity load_people <filename>
+            amity print_allocations [-o <filename>]
+            amity print_unallocated [-o <filename>]
+            amity print_room <room_name>
+            amity (-i | --interactive)
+            amity (-h | --help)
+      Options:
+            -i, --interactive  Interactive Mode
+            -h, --help  Show this screen and exit.
+    """
     prompt = '(amity) '
 
     @docopt_cmd

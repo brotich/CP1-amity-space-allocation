@@ -109,36 +109,32 @@ class DbUtil(object):
         # get staff members
         staff_db = self.db.query(StaffDB).all()
         for staff_data in staff_db:
-            staff = Staff(staff_data.staff_name, id=staff_data.staff_id, office=staff_data.staff_office)
-            staff_list.append(staff)
+            staff = Staff(staff_data.staff_name, id=staff_data.staff_id)
 
-            if staff.office:
-                if staff.office in offices:
-                    offices[staff.office].allocate_space(staff)
+            if staff_data.staff_office in offices:
+                    offices[staff_data.staff_office].allocate_space(staff)
 
             if not max_staff_id or max_staff_id < staff.id:
                 max_staff_id = str(staff.id)
+
+            staff_list.append(staff)
 
         # get fellows members
         fellow_db = self.db.query(FellowDB).all()
         for fellow_data in fellow_db:
             fellow = Fellow(fellow_data.fellow_name, id=fellow_data.fellow_id,
-                            accommodation=fellow_data.fellow_need_accommodation,
-                            office=fellow_data.fellow_office,
-                            living_space=fellow_data.fellow_living_space)
-
-            fellows_list.append(fellow)
+                            accommodation=fellow_data.fellow_need_accommodation)
 
             if not max_fellow_id or max_fellow_id < fellow.id:
                 max_fellow_id = str(fellow.id)
 
-            if fellow.office:
-                if fellow.office in offices:
-                    offices[fellow.office].allocate_space(fellow)
+            if fellow_data.fellow_office in offices:
+                    offices[fellow_data.fellow_office].allocate_space(fellow)
 
-            if fellow.living_space:
-                if fellow.living_space in living_spaces:
-                    living_spaces[fellow.living_space].allocate_space(fellow)
+            if fellow_data.fellow_living_space in living_spaces:
+                    living_spaces[fellow_data.fellow_living_space].allocate_space(fellow)
+
+            fellows_list.append(fellow)
 
         max_ids = {'(fellow': [int(max_fellow_id[2:])], 'staff': [int(max_staff_id[2:])]}
 

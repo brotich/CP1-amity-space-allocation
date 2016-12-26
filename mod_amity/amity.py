@@ -189,7 +189,7 @@ class Amity(object):
             raise ValueError("{} is full. Cannot relocate person".format(room_name))
 
         if new_room.type == Constants.LIVING_SPACE and person.role == Constants.STAFF:
-            raise  ValueError("Cannot relocate staff member to Living Space")
+            raise ValueError("Cannot relocate staff member to Living Space")
 
         old_room = None
 
@@ -249,7 +249,7 @@ class Amity(object):
     def save_state(self, db_path):
 
         if os.path.exists(db_path):
-            print ("deleting previous state database")
+            print("deleting previous state database")
             os.remove(db_path)
 
         db_util = DbUtil(db_path)

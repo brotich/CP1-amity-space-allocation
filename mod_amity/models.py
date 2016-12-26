@@ -1,4 +1,3 @@
-
 class Constants(object):
     STAFF = "Staff"
     FELLOW = "Fellow"
@@ -13,7 +12,6 @@ class Person(object):
     """
 
     def __init__(self, name, id=None):
-
         if name.strip() == " ":
             raise ValueError("name cannot empty")
 
@@ -28,22 +26,19 @@ class Person(object):
 
 
 class Staff(Person):
-
-    def __init__(self, name, id=None, office=None):
-        super(self.__class__, self).__init__(name, id=id)
+    def __init__(self, name, id=None):
+        super(Staff, self).__init__(name, id=id)
         self.role = Constants.STAFF
-        self.office = office
+        self.office = None
 
 
 class Fellow(Person):
-
-    def __init__(self, name, accommodation='N', id=None, living_space=None, office=None):
-        super(self.__class__, self).__init__(name, id=id)
+    def __init__(self, name, accommodation='N', id=None):
+        super(Fellow, self).__init__(name, id=id)
         if accommodation not in ['N', 'Y']:
             raise ValueError("accommodation should be Y or N")
         self.accommodation = accommodation
-        self.living_space = living_space
-        self.office = office
+        self.office, self.living_space = None, None
         self.role = Constants.FELLOW
 
     def assign_living_space(self, living_space):
@@ -53,17 +48,12 @@ class Fellow(Person):
 
 
 class Room(object):
-
     """
-    Boiler plat class for the rooms available in amity.
+    Boiler plate class for the rooms available in amity.
     It defines the occupants of a room and the capacity of the room
     """
 
-    name = None
-    occupants = []
-    capacity = None
-
-    def __init__(self, name,  capacity=None, room_type=None):
+    def __init__(self, name, capacity=None, room_type=None):
         self.room_type = room_type
         if not isinstance(name, str):
             raise TypeError("string expected")
@@ -84,7 +74,7 @@ class Room(object):
         self.occupants.append(person)
 
     def is_full(self):
-        return not len(self.occupants) < self.capacity
+        return len(self.occupants) >= self.capacity
 
 
 class Office(Room):
@@ -93,7 +83,11 @@ class Office(Room):
     """
 
     def __init__(self, name):
-        super(self.__class__, self).__init__(name, 6, Constants.OFFICE)
+        super(Office, self).__init__(name, 6, Constants.OFFICE)
+
+    def allocate_space(self, person):
+        super(Office, self).allocate_space(person)
+        person.office = self.name
 
 
 class LivingSpace(Room):
@@ -103,13 +97,10 @@ class LivingSpace(Room):
     """
 
     def __init__(self, name):
-        super(self.__class__, self).__init__(name, 4, Constants.LIVING_SPACE)
+        super(LivingSpace, self).__init__(name, 4, Constants.LIVING_SPACE)
 
     def allocate_space(self, person):
-
         if not isinstance(person, Fellow):
             raise TypeError("Staff cannot be allocate Living Space")
-        super(self.__class__, self).allocate_space(person)
-
-
-
+        super(LivingSpace, self).allocate_space(person)
+        person.living_space = self.name
